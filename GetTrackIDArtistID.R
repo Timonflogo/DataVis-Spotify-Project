@@ -1,4 +1,3 @@
-
 ## Libraries
 pacman::p_load("jsonlite"
                , "dplyr"
@@ -25,10 +24,6 @@ for (i in seq(from = 1, to = length(paths))) {
   #assign(paste0("Stream_history_", i), as.data.frame(list_df[[i]])) # if each list should be saved as a separate dataframe
 }
 df <- do.call(rbind, list_df)
-
-#cleaning environment
-rm(list = ls()[-2])
-
 
 ## Concatenating track and artist
 df <- df %>% 
@@ -57,6 +52,7 @@ f <- function(track_artist){
 }
 
 system.time({df_unique$artist_name <- pblapply(X = df_unique$track_artist,FUN = f)}, gcFirst = TRUE)
+
 
 
 
