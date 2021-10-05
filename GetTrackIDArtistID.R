@@ -7,6 +7,9 @@ pacman::p_load("jsonlite"
                , "pbapply"
                )
 
+Sys.setenv(SPOTIFY_CLIENT_ID = 'a0299cfb25944ecdbffc9079b987ff9a')
+Sys.setenv(SPOTIFY_CLIENT_SECRET = 'f773ae310efa4f74a751bb6f50d4b0b4')
+access_token <- get_spotify_access_token()
 
 ## Loading streaming history ----
 address <- "Tomas data/StreamingHistory"
@@ -27,7 +30,7 @@ for (i in seq(from = 1, to = length(paths))) {
 df <- do.call(rbind, list_df)
 
 #cleaning environment
-rm(list = ls()[-2])
+#rm(list = ls()[-2])
 
 
 ## Concatenating track and artist
@@ -38,14 +41,14 @@ df <- df %>%
 ## Unique track and song combinations
 
 df_unique <- data.frame(track_artist = unique(df$track_artist))
-
+# df_unique <- head(df_unique, n = 2000)
 
 ## Get song ID ----
 
 f <- function(track_artist){
   
   if(length(spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)) != 0){
-    spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)[[1]][[1]]$name
+    spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)[[1]][[1]]$id
   } else {
     NULL
   }
@@ -56,8 +59,8 @@ f <- function(track_artist){
   #cbind(result_artist_name,result_artist_id,result_track_id)
 }
 
-system.time({df_unique$artist_name <- pblapply(X = df_unique$track_artist,FUN = f)}, gcFirst = TRUE)
+system.time({df_unique$artist_id <- pblapply(X = df_unique$track_artist,FUN = f)}, gcFirst = TRUE)
 
-
+# saveRDS(df_unique, file = "artist_id.RDS")
 
 
