@@ -20,8 +20,7 @@ joined_df <- artist_id %>%
   left_join(df_unique_artist_name
             , by = 'track_artist') %>% 
   left_join(df_unique_track_id
-            , by = 'track_artist') %>% 
-  head(50)
+            , by = 'track_artist') 
 
 # function for extracting all features of each song in the list based on the id
 f <- function(track_feature){
@@ -69,7 +68,7 @@ main_df <- joined_df %>%
             , by = 'track_id')
 
 # saveRDS(df_track_features, file = "get_track_features.rds")
-# test <- readRDS(file = 'get_track_features.rds')
+
 
 
 
