@@ -34,29 +34,42 @@ df <- df %>%
 
 
 ## Unique track and song combinations
-
 df_unique <- data.frame(track_artist = unique(df$track_artist))
-# df_unique <- head(df_unique, n = 2000)
 
-## Get song ID ----
+## Get IDs ----
 
-f <- function(track_artist){
+f_artist_id <- function(track_artist){
   
   if(length(spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)) != 0){
     spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)[[1]][[1]]$id
   } else {
     NULL
   }
-  
-  #spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)[[1]][[1]]$name
-  # result_artist_id <- spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)[[1]][[1]]$id
-  # result_track_id <- spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)$id
-  #cbind(result_artist_name,result_artist_id,result_track_id)
 }
 
-system.time({df_unique$artist_id <- pblapply(X = df_unique$track_artist,FUN = f)}, gcFirst = TRUE)
+f_artist_name <- function(track_artist){
+  
+  if(length(spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)) != 0){
+    spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)[[1]][[1]]$name
+  } else {
+    NULL
+  }
+}
+
+f_track_id <- function(track_artist){
+  
+  if(length(spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)) != 0){
+    spotifyr::search_spotify(q = track_artist,type = "track",limit = 1)$id
+  } else {
+    NULL
+  }
+}
+
+#running the functions
+system.time({df_unique$artist_id <- pblapply(X = df_unique$track_artist,FUN = f_artist_id)}, gcFirst = TRUE)
+system.time({df_unique$artist_name <- pblapply(X = df_unique$track_artist,FUN = f_artist_name)}, gcFirst = TRUE)
+system.time({df_unique$trackid <- pblapply(X = df_unique$track_artist,FUN = f_track_id)}, gcFirst = TRUE)
 
 # saveRDS(df_unique, file = "artist_id.RDS")
-
 
 
