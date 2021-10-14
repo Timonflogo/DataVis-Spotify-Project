@@ -34,7 +34,7 @@ df <- df %>%
 track_features <- readRDS('get_track_features.RDS')
 
 ## Joining features on stream history
-stream_w_features <- df %>% 
+stream_full_features <- df %>% 
   inner_join(track_features, by = "track_artist")
 
 
