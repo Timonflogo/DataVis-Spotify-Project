@@ -84,7 +84,7 @@ stream_selected_c <- stream_selected_c %>%
          , time = format(as.POSIXct(endTime
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
-  mutate(weekday = weekdays(date)) %>% 
+  mutate(weekday = weekdays(date)) %>% # extracting weekdays fomr the date
   relocate(c(date, weekday, time) #change the position of these 2 columns 
            , .before = artist_id) %>% 
   relocate(track_id
