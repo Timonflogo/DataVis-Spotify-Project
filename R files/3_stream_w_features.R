@@ -90,6 +90,10 @@ stream_selected_c <- stream_selected_c %>%
   relocate(track_id
            , .before = artist_id)
 
+# replacing inf vcalues with 0 
+stream_selected_c <- stream_selected_c %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x))
+
 
 # saveRDS(stream_selected_c, file = "stream_selected_c_clean.rds")
 
