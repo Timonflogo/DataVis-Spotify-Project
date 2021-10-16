@@ -77,6 +77,9 @@ stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)
                                                         , "_per_ms") := lapply(.SD,`/`, stream_selected_c$msPlayed)
                                                , .SDcols = danceability : tempo]
 
+# replacing inf vcalues with 0 
+stream_selected_c <- stream_selected_c %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x))
 
 # Creating date and time columns from endTime
 stream_selected_c <- stream_selected_c %>% 
@@ -89,10 +92,6 @@ stream_selected_c <- stream_selected_c %>%
            , .before = artist_id) %>% 
   relocate(track_id
            , .before = artist_id)
-
-# replacing inf vcalues with 0 
-stream_selected_c <- stream_selected_c %>% 
-  mutate_all(function(x) ifelse(is.infinite(x), 0, x))
 
 
 # saveRDS(stream_selected_c, file = "stream_selected_c_clean.rds")
