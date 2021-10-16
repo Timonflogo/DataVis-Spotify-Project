@@ -77,14 +77,19 @@ stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)
                                                         , "_per_ms") := lapply(.SD,`/`, stream_selected_c$msPlayed)
                                                , .SDcols = danceability : tempo]
 
+
 # Creating date and time columns from endTime
 stream_selected_c <- stream_selected_c %>% 
   mutate(date = as.Date(endTime)
          , time = format(as.POSIXct(endTime
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
-  relocate(c(date, time) #change the position of these 2 columns 
-           , .after = endTime)
+  mutate(weekday = weekdays(date)) %>% 
+  relocate(c(date, weekday, time) #change the position of these 2 columns 
+           , .before = artist_id) %>% 
+  relocate(track_id
+           , .before = artist_id)
+
 
 # saveRDS(stream_selected_c, file = "stream_selected_c_clean.rds")
 
