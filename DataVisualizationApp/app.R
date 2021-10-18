@@ -1,25 +1,7 @@
 # Libraries
 # require("remotes")
 # remotes::install_github("hrbrmstr/streamgraph")
-pacman::p_load(reshape2,ggplot2,ggstream,plotly,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra)
-pacman::p_load(shiny, shinythemes, shinyWidgets, plotly, tidyverse)
-
-
-# Define a Streamgraph displaying Spotify audio features over time 
-# Load Data ----
-
-df <- readRDS("R dataframe/stream_selected_c_clean.rds")
-print(df)
-df
-
-stream_gg <- df %>% 
-    melt(1:11) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
-    group_by(year_week,month,variable) %>% 
-    summarise(value = sum(value))
-
-#Create an index to map the y values onto a continous x axis
-stream_gg$index <- sort(rep(seq(1,55),9))
-
+pacman::p_load(reshape2,ggplot2,ggstream,plotly,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra,shiny, shinythemes, shinyWidgets, plotly, tidyverse)
 
 ui <- navbarPage(
     theme = shinytheme("cerulean"),
@@ -63,6 +45,21 @@ ui <- navbarPage(
 
 server <- function(input,output){
     
+    # Commands to run on initiating the app
+    df <- readRDS("Data/stream_selected_c_clean.rds") #Shortened, if run manually instert: DataVisualizationApp/
+    source("ConvenienceFunctions/ConvenienceFunctions.R")
+    source("VizScripts/Visualizations.R")
+    
+    #Load aggregated features
+    stream_gg <- df %>% 
+        melt(1:11) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
+        group_by(year_week,month,variable) %>% 
+        summarise(value = sum(value))
+    
+    #Create an index to map the y values onto a continous x axis
+    stream_gg$index <- sort(rep(seq(1,55),9))
+    
+    
     selectedData <- reactive({
         data <- brushedPoints(stream_gg, input$plot1_brush)
         if (nrow(data) == 0)
@@ -72,12 +69,10 @@ server <- function(input,output){
     
     
     output$Streamgraph<-renderPlot({
-        cap_space <- function(string){capitalize(str_replace(string,pattern = "_",replacement = " "))}
         idx <- seq(from = 1,to = length(stream_gg$index),by = 9 * 4.45) #months are on avg. 4.5 weeks
-        
+
         ggplot(stream_gg, aes(x = index, y = value, fill = cap_space(string = variable))) +
             geom_stream(n_grid = 57,bw = 0.25) + #bw = wigglyness
-            #geom_stream_label(aes(label = cap_space(string = variable))) + 
             scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9,name = 'Blues')) +
             theme(panel.background = element_blank()
                   ,panel.grid.major.x = element_line(size = 0.3, color="black",linetype = "dotted")
@@ -92,12 +87,10 @@ server <- function(input,output){
     )
     
     output$Streamgraph1<-renderPlot({
-        cap_space <- function(string){capitalize(str_replace(string,pattern = "_",replacement = " "))}
         idx <- seq(from = 1,to = length(stream_gg$index),by = 9 * 4.45) #months are on avg. 4.5 weeks
         
         ggplot(selectedData(), aes(x = index, y = value, fill = cap_space(string = variable))) +
             geom_stream(n_grid = 57,bw = 0.5) + #bw = wigglyness
-            #geom_stream_label(aes(label = cap_space(string = variable))) + 
             scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9,name = 'Blues')) +
             theme(panel.background = element_blank()
                   ,panel.grid.major.x = element_line(size = 0.3, color="black",linetype = "dotted")
