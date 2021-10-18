@@ -40,6 +40,10 @@ track_features <- readRDS('get_track_features.RDS')
 stream_full_features <- df %>% 
   inner_join(track_features, by = "track_artist")
 
+# filter out songs having ms played longer than ms duration
+stream_full_features <- stream_full_features[stream_full_features$msPlayed != 0,]
+stream_full_features <- stream_full_features[stream_full_features$msPlayed <= stream_full_features$duration_ms,]
+
 # splitting artist_id into first id and the rest 
 temp_artist <- str_split(string = stream_full_features$artist_id
                          , pattern = ","
@@ -74,14 +78,14 @@ stream_selected_c <- stream_full_features %>%
             , .vars = vars(6:14))
 
 # Calculating the features per ms to have a single unit for aggregation
-stream_selected_c_temp <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
+stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
                                                         , "_per_ms") := lapply(.SD,`/`, stream_selected_c$duration_ms)
-                                               , .SDcols = danceability : tempo]
+                                               , .SDcols = 6 : 14]
 
 # Calculating the features value based on how long the track was actually played 
-stream_selected_c <- setDT(stream_selected_c_temp)[ , paste0(names(stream_selected_c)[6:14]
+stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
                                                         , "_per_track") := lapply(.SD,`*`, stream_selected_c$msPlayed)
-                                               , .SDcols = danceability_per_ms : tempo_per_ms]
+                                               , .SDcols = 15 : 23]
 
 # replacing inf vcalues with 0 
 stream_selected_c <- stream_selected_c %>% 
