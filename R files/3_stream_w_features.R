@@ -101,12 +101,14 @@ stream_selected_c <- stream_selected_c %>%
   #mutate(week_number = )
   mutate(year_week = as.numeric(strftime(date, format = "%Y%W")) + 1) %>% 
   mutate(start_day_week = floor_date(date,unit = "week", week_start = 1)) %>% 
+  mutate(month = months(start_day_week)) %>% 
   relocate(c(date
-             ,year_week
+             , month
+             , year_week
              , weekday
-             ,start_day_week
+             , start_day_week
              , time) #change the position of these 2 columns 
-           , .before = artist_id) %>% 
+             , .before = artist_id) %>% 
   relocate(track_id
            , .before = artist_id) %>% 
   select(-c(danceability:tempo_per_ms))
