@@ -1,13 +1,22 @@
 # Libraries
-library(shiny)
-library(shinythemes)
-library(shinyWidgets)
-library(plotly)
-library(tidyverse)
+# require("remotes")
+# remotes::install_github("hrbrmstr/streamgraph")
+# pacman::p_load(reshape2,ggplot2,ggstream,plotly,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra)
+# pacman::p_load(shiny, shinythemes, shinyWidgets, plotly, tidyverse)
 
 
-# Define UI for application that draws a histogram ----
-# Define UI for application that draws a histogram
+# Define a Streamgraph displaying SPotify audio features over time 
+# Load Data ----
+df <- readRDS("R dataframe/stream_selected_c_clean.rds")
+print(df)
+df
+
+stream_gg <- df %>% 
+    melt(1:10) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
+    group_by(week_number,variable) %>% 
+    summarise(value = sum(value))
+
+
 ui <- navbarPage(
     theme = shinytheme("cerulean"),
     fluid = TRUE, 
@@ -17,8 +26,8 @@ ui <- navbarPage(
     tabPanel(title = "Welcome",
              h3("Spotify of making movie recommendations"),
              p("This is some text introduction"),
-    ),
-    
+             
+             mainPanel(plotOutput(outputId = "Streamgraph"), width = 11)),
     
     #' *Tab 2: Streaming history* 
     tabPanel(title = "Streaming history statistics",
@@ -28,51 +37,28 @@ ui <- navbarPage(
              #Create fluid row to set inputs side-by-side
              fluidRow(
                  column(width = 2,
-                        sliderInput("range", "Time period:",
-                                    min = 1, max = 53,
-                                    value = c(1,53))
-                        ,
+                        sliderInput(inputId = "weeks",label = "Select weeks:"
+                                    ,min = 1,max = 52,value = 1
+                                    ,width = 700),
                  )
-             ),
-             fluidPage(
-                 # column(width = 2,
-                 #        numericInput(inputId = "no_recc_euc",label =  "Euc. dist recommendations:"
-                 #                     ,value =  5,min = 1,max = 10),
-                 # ),
-                 # 
-                 # 
-                 # column(width = 2,
-                 #        numericInput(inputId = "no_recc_lda",label =  "Topic recommendations:"
-                 #                     ,value =  5,min = 1,max = 10),
-                 # ),
-                 # 
-                 mainPanel(
-                     tableOutput(outputId = "distPlot"),
-                     width = 11
-                 )
+                 
              )
     )
 )
 
-# Define server logic required to draw a histogram ----
-server <- function(input, output) {
+server <- function(input,output){
     
-    ## Streamgraph data ----
-    df <- readRDS("R dataframe/stream_selected_c_clean.rds")
-    stream_gg <- df %>% 
-        melt(1:10) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
-        group_by(year_week,variable) %>% 
-        summarise(value = sum(value))
-
-    output$distPlot <- renderPlot({
-        cap_space <- function(string){capitalize(str_replace(string,pattern = "_",replacement = " "))}
-        ggplot(stream_gg[stream_gg[stream_gg$year_week ---------contienuesas], aes(x = year_week, y = value, fill = cap_space(string = variable))) +
-            geom_stream() +
-            geom_stream_label(aes(label = cap_space(string = variable))) + 
-            theme(panel.background = element_blank()) +
-            labs(fill = 'Features')
+    stream_plot <- reactive({
+        stream_gg
     })
+    
+    
+    output$Streamgraph<-renderPlot({
+        ggplot(stream_gg, aes(x = week_number, y = value, fill = variable)) +
+            geom_stream()}
+    )
 }
+
 
 # Run the application 
 shinyApp(ui = ui, server = server)
