@@ -6,6 +6,7 @@ pacman::p_load("jsonlite"
                , "pbapply"
                , "stringr"
                , "data.table"
+               , "lubridate"
 )
 
 Sys.setenv(SPOTIFY_CLIENT_ID = 'a0299cfb25944ecdbffc9079b987ff9a')
@@ -88,10 +89,11 @@ stream_selected_c <- stream_selected_c %>%
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
   mutate(weekday = weekdays(date)) %>% # extracting weekdays fomr the date
-  relocate(c(date, weekday, time) #change the position of these 2 columns 
+  mutate(week_number = lubridate::week(date)) %>% 
+  relocate(c(date,week_number, weekday, time) #change the position of these 2 columns 
            , .before = artist_id) %>% 
   relocate(track_id
-           , .before = artist_id)
+           , .before = artist_id) 
 
 
 # saveRDS(stream_selected_c, file = "stream_selected_c_clean.rds")
