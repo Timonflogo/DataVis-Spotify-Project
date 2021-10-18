@@ -34,7 +34,7 @@ df <- df %>%
   mutate(track_artist = paste(trackName, artistName, sep = " "))
 
 ## Loading features of unique songs that the user listened to
-track_features <- readRDS('get_track_features.RDS')
+track_features <- readRDS('R dataframe/get_track_features.RDS')
 
 ## Joining features on stream history
 stream_full_features <- df %>% 
@@ -99,12 +99,15 @@ stream_selected_c <- stream_selected_c %>%
                          , "%H:%M:%S")) %>% 
   mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
   mutate(week_number = lubridate::week(date)) %>% 
-  relocate(c(date,week_number, weekday, time) #change the position of these 2 columns 
+  mutate(start_day_week = floor_date(date,unit = "week")) %>% 
+  relocate(c(date,week_number, weekday,start_day_week, time) #change the position of these 2 columns 
            , .before = artist_id) %>% 
   relocate(track_id
            , .before = artist_id) %>% 
   select(-c(danceability:tempo_per_ms))
 
-
-# saveRDS(stream_selected_c, file = "stream_selected_c_clean.rds")
+  
+  
+  
+# saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
 
