@@ -98,10 +98,10 @@ stream_selected_c <- stream_selected_c %>%
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
   mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
-  mutate(week_number = as.integer(strftime(date, format("%V")))) %>% 
+  mutate(year_week = as.integer(strftime(date, format("%Y%V")))) %>% 
   mutate(start_day_week = floor_date(date,unit = "week", week_start = 1)) %>% 
   relocate(c(date
-             ,week_number
+             ,year_week
              , weekday
              ,start_day_week
              , time) #change the position of these 2 columns 
@@ -109,8 +109,6 @@ stream_selected_c <- stream_selected_c %>%
   relocate(track_id
            , .before = artist_id) %>% 
   select(-c(danceability:tempo_per_ms))
-
-  
   
   
 # saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
