@@ -98,7 +98,8 @@ stream_selected_c <- stream_selected_c %>%
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
   mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
-  mutate(year_week = as.integer(strftime(date, format("%V")))) %>% 
+  #mutate(week_number = )
+  mutate(year_week = as.numeric(strftime(date, format = "%Y%W")) + 1) %>% 
   mutate(start_day_week = floor_date(date,unit = "week", week_start = 1)) %>% 
   relocate(c(date
              ,year_week
