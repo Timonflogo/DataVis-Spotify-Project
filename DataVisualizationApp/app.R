@@ -28,9 +28,10 @@ ui <- navbarPage(
              #Create fluid row to set inputs side-by-side
              fluidRow(
                  column(width = 2,
-                        sliderInput(inputId = "weeks",label = "Select weeks:"
-                                    ,min = 1,max = 52,value = 1
-                                    ,width = 700),
+                        sliderInput("range", "Time period:",
+                                    min = 1, max = 53,
+                                    value = c(1,53))
+                        ,
                  )
              ),
              fluidPage(

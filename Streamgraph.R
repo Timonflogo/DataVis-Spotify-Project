@@ -1,7 +1,7 @@
 # libraries
 require("remotes")
 remotes::install_github("hrbrmstr/streamgraph")
-pacman::p_load(reshape2,ggplot2,ggstream,plotly,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra)
+pacman::p_load(reshape2,ggplot2,ggstream,plotly,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra,stringr)
 
 
 ## Streamgraph data ----
@@ -14,28 +14,27 @@ stream_df <- df %>%
 
 stream_gg <- df %>% 
   melt(1:10) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
-  group_by(week_number,variable) %>% 
+  group_by(year_week,variable) %>% 
   summarise(value = sum(value))
 
+stream_gg <- as.data.frame(stream_gg)
+
 ## Plotting ----
-ggplot(stream_gg, aes(x = week_number, y = value, fill = variable)) +
+cap_space <- function(string){capitalize(str_replace(string,pattern = "_",replacement = " "))}
+
+ggplot(stream_gg, aes(x = year_week, y = value, fill = cap_space(string = variable))) +
   geom_stream() +
-  geom_stream_label(aes(label = variable))
-
-
-streamgraph::streamgraph(stream_df, key="variable", value="value", date="start_day_week", height="600px", width="1800px") %>% 
-  #sg_fill_brewer("Spectral") %>% #BrBG PiYG PRGn PuOr RdBu RdGy RdYlBu RdYlGn Spectral
-  sg_legend(show = TRUE,"Features")
-
-
-
-
-
-
-ggplot(stream_gg, aes(x = week_number, y = value, fill = capitalize(str_replace(variable,pattern = "_",replacement = " ")))) +
-  geom_stream(n_grid = 55) +
-  geom_stream_label(aes(label = capitalize(str_replace(variable,pattern = "_",replacement = " ")))) + 
+  geom_stream_label(aes(label = cap_space(string = variable))) + 
   theme(panel.background = element_blank()) +
   labs(fill = 'Features')
 
-grid.arrange(plot2)
+
+
+
+# streamgraph::streamgraph(stream_df, key="variable", value="value", date="start_day_week", height="600px", width="1800px") %>% 
+#   #sg_fill_brewer("Spectral") %>% #BrBG PiYG PRGn PuOr RdBu RdGy RdYlBu RdYlGn Spectral
+#   sg_legend(show = TRUE,"Features")
+
+
+
+
