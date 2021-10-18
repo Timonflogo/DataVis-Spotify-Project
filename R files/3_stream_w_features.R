@@ -74,7 +74,7 @@ stream_selected_c <- stream_full_features %>%
 
 # Calculating the features per ms played to have a single unit for aggregation
 stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
-                                                        , "_per_ms") := lapply(.SD,`/`, stream_selected_c$msPlayed)
+                                                        , "_per_ms") := lapply(.SD,`/`, stream_selected_c$duration_ms)
                                                , .SDcols = danceability : tempo]
 
 # replacing inf vcalues with 0 
