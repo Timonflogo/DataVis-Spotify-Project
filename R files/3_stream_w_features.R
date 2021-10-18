@@ -84,7 +84,7 @@ stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)
 
 # Calculating the features value based on how long the track was actually played 
 stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
-                                                        , "_per_track") := lapply(.SD,`*`, stream_selected_c$msPlayed)
+                                                        , "_exposed") := lapply(.SD,`*`, stream_selected_c$msPlayed)
                                                , .SDcols = 15 : 23]
 
 # replacing inf vcalues with 0 
@@ -102,7 +102,8 @@ stream_selected_c <- stream_selected_c %>%
   relocate(c(date,week_number, weekday, time) #change the position of these 2 columns 
            , .before = artist_id) %>% 
   relocate(track_id
-           , .before = artist_id) 
+           , .before = artist_id) %>% 
+  select(-c(danceability:tempo_per_ms))
 
 
 # saveRDS(stream_selected_c, file = "stream_selected_c_clean.rds")
