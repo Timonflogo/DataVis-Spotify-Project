@@ -19,4 +19,6 @@ stream_df <- df %>%
 #   geom_stream_label(aes(label = variable))
 
 streamgraph::streamgraph(stream_df, key="variable", value="value", date="start_day_week", height="600px", width="1800px") %>% 
-  sg_fill_brewer("Spectral") #BrBG PiYG PRGn PuOr RdBu RdGy RdYlBu RdYlGn Spectral
+  #sg_fill_brewer("Spectral") %>% #BrBG PiYG PRGn PuOr RdBu RdGy RdYlBu RdYlGn Spectral
+  #sg_title("Stream features")
+  sg_legend(label = c("Tempo","Valence","Liveness","Instrumentalness","Acousticness","Speechiness","Loudness","Energy","Danceaility"))
