@@ -100,7 +100,11 @@ stream_selected_c <- stream_selected_c %>%
   mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
   mutate(week_number = lubridate::week(date)) %>% 
   mutate(start_day_week = floor_date(date,unit = "week")) %>% 
-  relocate(c(date,week_number, weekday,start_day_week, time) #change the position of these 2 columns 
+  relocate(c(date
+             ,week_number
+             , weekday
+             ,start_day_week
+             , time) #change the position of these 2 columns 
            , .before = artist_id) %>% 
   relocate(track_id
            , .before = artist_id) %>% 
