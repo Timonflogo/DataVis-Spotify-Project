@@ -56,14 +56,21 @@ ui <- navbarPage(
 
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
+    
+    ## Streamgraph data ----
+    df <- readRDS("R dataframe/stream_selected_c_clean.rds")
+    stream_gg <- df %>% 
+        melt(1:10) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
+        group_by(year_week,variable) %>% 
+        summarise(value = sum(value))
 
     output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$weeks + 1)
-
-        # draw the histogram with the specified number of bins
-        hist(x, breaks = bins, col = 'darkgray', border = 'white')
+        cap_space <- function(string){capitalize(str_replace(string,pattern = "_",replacement = " "))}
+        ggplot(stream_gg[stream_gg[stream_gg$year_week ---------contienuesas], aes(x = year_week, y = value, fill = cap_space(string = variable))) +
+            geom_stream() +
+            geom_stream_label(aes(label = cap_space(string = variable))) + 
+            theme(panel.background = element_blank()) +
+            labs(fill = 'Features')
     })
 }
 
