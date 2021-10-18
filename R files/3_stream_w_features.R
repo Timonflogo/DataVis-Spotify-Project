@@ -73,10 +73,15 @@ stream_selected_c <- stream_full_features %>%
   mutate_at(scales::rescale
             , .vars = vars(6:14))
 
-# Calculating the features per ms played to have a single unit for aggregation
-stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
+# Calculating the features per ms to have a single unit for aggregation
+stream_selected_c_temp <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
                                                         , "_per_ms") := lapply(.SD,`/`, stream_selected_c$duration_ms)
                                                , .SDcols = danceability : tempo]
+
+# Calculating the features value based on how long the track was actually played 
+stream_selected_c <- setDT(stream_selected_c_temp)[ , paste0(names(stream_selected_c)[6:14]
+                                                        , "_per_track") := lapply(.SD,`*`, stream_selected_c$msPlayed)
+                                               , .SDcols = danceability_per_ms : tempo_per_ms]
 
 # replacing inf vcalues with 0 
 stream_selected_c <- stream_selected_c %>% 
@@ -88,7 +93,7 @@ stream_selected_c <- stream_selected_c %>%
          , time = format(as.POSIXct(endTime
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
-  mutate(weekday = weekdays(date)) %>% # extracting weekdays fomr the date
+  mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
   mutate(week_number = lubridate::week(date)) %>% 
   relocate(c(date,week_number, weekday, time) #change the position of these 2 columns 
            , .before = artist_id) %>% 
