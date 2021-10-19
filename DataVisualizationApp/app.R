@@ -3,17 +3,10 @@ pacman::p_load(reshape2,ggplot2,ggstream,streamgraph,RColorBrewer,Hmisc,dplyr,gr
                ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb)
 
 # Commands to run on initiating the app
-df <- readRDS("Data/stream_selected_c_clean.rds") #Shortened, if run manually instert: DataVisualizationApp/
+df <- readRDS("Data/stream_selected_c_clean.rds")
 source("ConvenienceFunctions/ConvenienceFunctions.R")
 source("VizScripts/Visualizations.R")
-
-#THIS IS ONLY FOR STREAMHISTORY BRUSHING
-stream_group_date <- df %>%
-    melt(1:11) %>%
-    group_by(date, month, variable) %>%
-    summarise(value = sum(value))
-stream_group_date$index <- sort(rep(seq(1,nrow(stream_group_date)/length(unique(stream_group_date$variable))),9)) #Create an index to map the y values onto a continous x axis
-
+source("Data/stream_group_data.R")
 
 # UI ----
 ui <- navbarPage(
@@ -52,13 +45,6 @@ server <- function(input,output){
     
     ## Getting data ----
     
-    #THIS IS ONLY FOR STREAMHISTORY BRUSHING
-    stream_group_date <- df %>%
-        melt(1:11) %>%
-        group_by(date, month, variable) %>%
-        summarise(value = sum(value))
-    stream_group_date$index <- sort(rep(seq(1,nrow(stream_group_date)/length(unique(stream_group_date$variable))),9)) #Create an index to map the y values onto a continous x axis
-
     ### masterData ----
     masterData <- reactive({
         
