@@ -2,7 +2,6 @@
 
 ## Streamgraph ----
 streamgraph <- function(dataInput1){
-setwd("~/OneDrive/OneDrive/AU - Business Intelligence/Data Visualization/DataVis-Spotify-Project")
 source("DataVisualizationApp/ConvenienceFunctions/ConvenienceFunctions.R")
 
 #Load aggregated features
