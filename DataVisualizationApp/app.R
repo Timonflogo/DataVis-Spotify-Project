@@ -37,7 +37,13 @@ ui <- navbarPage(
                                               )
                             ),
                  plotOutput(outputId = "Streamgraph1"
-                            ), 
+                            ),
+                 
+                 textOutput(outputId = "Text"),
+                 
+                 dataTableOutput(outputId = "BrushedData"
+                             ),
+                 
                  width = 11)
                  
                  ),
@@ -61,14 +67,26 @@ ui <- navbarPage(
 
 server <- function(input,output){
     
-
-    
-    
     selectedData <- reactive({
         data <- brushedPoints(stream_gg, input$plot1_brush)
         if (nrow(data) == 0)
             data <- stream_gg
+        
+        #Return the data
         data
+    })
+    
+    output$Text <- renderText({
+        
+        data <- brushedPoints(stream_gg, input$plot1_brush)
+        if (nrow(data) == 0)
+            data <- stream_gg
+
+        #Filter values
+        filter_start_date <- sort(data$year_week,decreasing = FALSE)[1]
+        filter_end_date <- sort(data$year_week,decreasing = TRUE)[1]
+                
+        paste0("You have filtered your data from ",filter_start_date," to ",filter_end_date)
     })
     
     
@@ -107,6 +125,10 @@ server <- function(input,output){
             labs(fill = 'Features',x = "Time")
         }
     )
+    
+    output$BrushedData <- renderDataTable({
+        selectedData()
+    })
 }
 
 
