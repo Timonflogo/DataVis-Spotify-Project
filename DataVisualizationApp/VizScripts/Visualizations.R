@@ -31,7 +31,6 @@ idx <- seq(from = 1,to = length(stream_gg$index),by = 9 * 4.45) #months are on a
 ribbonchart <- function(dataInput1){
 stream_group_weekday <- dataInput1 %>% 
   melt(1:11) %>% 
-  filter(date >= "2020-09-23" & date <= "2020-10-07") %>% 
   group_by(weekday, variable) %>% 
   summarise(value = sum(value)) %>% 
   mutate(weekday = ordered(weekday, levels=c("Monday", "Tuesday", "Wednesday", "Thursday", 
