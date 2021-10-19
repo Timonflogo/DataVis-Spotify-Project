@@ -2,7 +2,7 @@
 
 ## Streamgraph ----
 streamgraph <- function(dataInput1){
-source("DataVisualizationApp/ConvenienceFunctions/ConvenienceFunctions.R")
+source("ConvenienceFunctions/ConvenienceFunctions.R")
 
 #Load aggregated features
 stream_gg <- dataInput1 %>% 
