@@ -3,6 +3,22 @@
 # remotes::install_github("hrbrmstr/streamgraph")
 pacman::p_load(reshape2,ggplot2,ggstream,plotly,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra,shiny, shinythemes, shinyWidgets, plotly, tidyverse)
 
+# Commands to run on initiating the app
+df <- readRDS("Data/stream_selected_c_clean.rds") #Shortened, if run manually instert: DataVisualizationApp/
+source("ConvenienceFunctions/ConvenienceFunctions.R")
+source("VizScripts/Visualizations.R")
+
+#Load aggregated features
+stream_gg <- df %>% 
+    melt(1:11) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
+    group_by(year_week,month,variable) %>% 
+    summarise(value = sum(value))
+
+#Create an index to map the y values onto a continous x axis
+stream_gg$index <- sort(rep(seq(1,55),9))
+
+streamgraph(dataInput1 = df)
+
 ui <- navbarPage(
     theme = shinytheme("cerulean"),
     fluid = TRUE, 
@@ -10,7 +26,7 @@ ui <- navbarPage(
     
     #' *Tab 1*
     tabPanel(title = "Welcome",
-             h3("Spotify of making movie recommendations"),
+             h3("Spotify"),
              p("This is some text introduction"),
              
              # Main panel for page 1
@@ -45,19 +61,7 @@ ui <- navbarPage(
 
 server <- function(input,output){
     
-    # Commands to run on initiating the app
-    df <- readRDS("Data/stream_selected_c_clean.rds") #Shortened, if run manually instert: DataVisualizationApp/
-    source("ConvenienceFunctions/ConvenienceFunctions.R")
-    source("VizScripts/Visualizations.R")
-    
-    #Load aggregated features
-    stream_gg <- df %>% 
-        melt(1:11) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
-        group_by(year_week,month,variable) %>% 
-        summarise(value = sum(value))
-    
-    #Create an index to map the y values onto a continous x axis
-    stream_gg$index <- sort(rep(seq(1,55),9))
+
     
     
     selectedData <- reactive({

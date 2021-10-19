@@ -1,21 +1,20 @@
 
 
 ## Streamgraph ----
+streamgraph <- function(dataInput1){
 setwd("~/OneDrive/OneDrive/AU - Business Intelligence/Data Visualization/DataVis-Spotify-Project")
-df <- readRDS("DataVisualizationApp/Data/stream_selected_c_clean.rds") #Shortened, if run manually instert: DataVisualizationApp/
 source("DataVisualizationApp/ConvenienceFunctions/ConvenienceFunctions.R")
 
 #Load aggregated features
-stream_gg <- df %>% 
+stream_gg <- dataInput1 %>% 
   melt(1:11) %>%  #Keep columns 1 - 9, create a row entry for each column value of 10 - 18
   group_by(year_week,month,variable) %>% 
   summarise(value = sum(value))
 stream_gg$index <- sort(rep(seq(1,55),9))
 
-
 idx <- seq(from = 1,to = length(stream_gg$index),by = 9 * 4.45) #months are on avg. 4.5 weeks
-streamgraph <- function(dataInput){
-  ggplot(dataInput, aes(x = index, y = value, fill = cap_space(string = variable))) +
+
+  ggplot(stream_gg, aes(x = index, y = value, fill = cap_space(string = variable))) +
     geom_stream(n_grid = 57,bw = 0.5) + #bw = wigglyness
     scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9,name = 'Blues')) +
     theme(panel.background = element_blank()

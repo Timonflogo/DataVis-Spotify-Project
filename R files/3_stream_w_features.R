@@ -9,9 +9,12 @@ pacman::p_load("jsonlite"
                , "lubridate"
 )
 
-Sys.setenv(SPOTIFY_CLIENT_ID = 'a0299cfb25944ecdbffc9079b987ff9a')
-Sys.setenv(SPOTIFY_CLIENT_SECRET = 'f773ae310efa4f74a751bb6f50d4b0b4')
-access_token <- get_spotify_access_token()
+
+source("MyKey.R")
+
+# Sys.setenv(SPOTIFY_CLIENT_ID = 'a0299cfb25944ecdbffc9079b987ff9a')
+# Sys.setenv(SPOTIFY_CLIENT_SECRET = 'f773ae310efa4f74a751bb6f50d4b0b4')
+# access_token <- get_spotify_access_token()
 
 ## Loading streaming history ----
 address <- "Tomas data/StreamingHistory"
@@ -34,7 +37,7 @@ df <- df %>%
   mutate(track_artist = paste(trackName, artistName, sep = " "))
 
 ## Loading features of unique songs that the user listened to
-track_features <- readRDS('R dataframe/get_track_features.RDS')
+track_features <- readRDS('R_dataframe/get_track_features.RDS')
 
 ## Joining features on stream history
 stream_full_features <- df %>% 
@@ -114,5 +117,6 @@ stream_selected_c <- stream_selected_c %>%
   select(-c(danceability:tempo_per_ms))
   
   
-# saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
+#saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
+saveRDS(stream_selected_c, file = "DataVisualizationApp/Data/stream_selected_c_clean.rds")
 
