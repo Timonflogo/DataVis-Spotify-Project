@@ -1,6 +1,6 @@
 # Libraries
 pacman::p_load(reshape2,ggplot2,ggstream,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra,shiny,shinythemes
-               ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb)
+               ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb,ragtop)
 
 # Commands to run on initiating the app
 df <- readRDS("Data/stream_selected_c_clean.rds")
@@ -35,7 +35,11 @@ ui <- navbarPage(
              
              textOutput(outputId = "FilterText"),
              
+             numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50),
+             numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50),
+             
              plotlyOutput("bar"),
+             
              uiOutput("back"),
              
              dataTableOutput(outputId = "BrushedData"),
@@ -106,8 +110,10 @@ server <- function(input,output){
         df_barchart <- masterData() %>% 
           group_by(artist_id) %>% 
           summarise(msPlayed = sum(msPlayed)) %>%
-          arrange(desc(msPlayed)) %>% 
-          top_n(n = 10)
+          mutate(hsPlayed = msPlayed/3600000) %>% 
+          select(-msPlayed) %>% 
+          arrange(desc(hsPlayed)) %>% 
+          top_n(n = ifelse(test = is.blank(input$NumArtists),yes = 10,no = input$NumArtists))
         )
     }
     
@@ -115,22 +121,19 @@ server <- function(input,output){
       filter(artist_id %in% current_category()) %>% 
       group_by(track_id) %>% 
       summarise(msPlayed = sum(msPlayed)) %>% 
-      arrange(desc(msPlayed)) %>% 
-      top_n(n = 10)
+      mutate(hsPlayed = msPlayed/3600000) %>% 
+      select(-msPlayed) %>% 
+      arrange(desc(hsPlayed)) %>% 
+      top_n(n = ifelse(test = is.blank(input$NumTracks),yes = 10,no = input$NumTracks))
   })
   
   output$bar <- renderPlotly({
-    #d <- setNames(object = barplot_data(),nm = c("x", "y"))
-    
-    x <- barplot_data()[,1]
-    y <- barplot_data()[,2]
-    
-    # plot_ly(d) %>%
-    
-      plot_ly(data = cbind(x,y)
-              , x = x, y = y
-              ,orientation = 'h',type = "bar") %>% #, color = ~x,
-      layout(title = current_category() %||% "Artist") #go for current Artist unless else is selected
+    d <- setNames(object = barplot_data(),nm = c("x", "y"))
+  
+    plot_ly(data = d
+            ,x = ~reorder(x,desc(y)), y = ~y
+            ,type = "bar") %>%
+    layout(title = current_category() %||% "Artist") #go for current Artist unless else is selected
     
   })
   

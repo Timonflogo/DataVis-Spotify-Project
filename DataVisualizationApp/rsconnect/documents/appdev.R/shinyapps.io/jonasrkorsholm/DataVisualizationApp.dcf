@@ -1,0 +1,12 @@
+name: DataVisualizationApp
+title: DataVisualizationApp
+username:
+account: jonasrkorsholm
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4933404
+bundleId: 5166088
+url: https://jonasrkorsholm.shinyapps.io/DataVisualizationApp/
+when: 1634899351.89293
+asMultiple: FALSE
+asStatic: FALSE
