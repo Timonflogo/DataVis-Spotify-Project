@@ -70,25 +70,27 @@ stream_full_features <- stream_full_features %>%
 
 # Selecting columns to work with since some are irrelevant
 stream_selected_c <- stream_full_features %>% 
-  select(artist_id
+  select(trackName
+         , artistName
+         , artist_id
          , track_id
          , msPlayed
          , endTime
          , duration_ms
-         , 9, 10, 12, 14:19, ) %>% 
+         , 9, 10, 12, 14:19) %>% 
   # standardizing features into range of 0 - 1
   mutate_at(scales::rescale
-            , .vars = vars(6:14))
+            , .vars = vars(danceability :tempo))
 
 # Calculating the features per ms to have a single unit for aggregation
-stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
+stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[8:16]
                                                         , "_per_ms") := lapply(.SD,`/`, stream_selected_c$duration_ms)
-                                               , .SDcols = 6 : 14]
+                                               , .SDcols = 8 : 16]
 
 # Calculating the features value based on how long the track was actually played 
-stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[6:14]
+stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[8:16]
                                                         , "_exposed") := lapply(.SD,`*`, stream_selected_c$msPlayed)
-                                               , .SDcols = 15 : 23]
+                                               , .SDcols = 17 : 25]
 
 # replacing inf vcalues with 0 
 stream_selected_c <- stream_selected_c %>% 
@@ -112,11 +114,12 @@ stream_selected_c <- stream_selected_c %>%
              , start_day_week
              , time) #change the position of these 2 columns 
              , .before = artist_id) %>% 
-  relocate(track_id
-           , .before = artist_id) %>% 
+  relocate(c(track_id
+             , artist_id)
+           , .before = trackName) %>% 
   select(-c(danceability:tempo_per_ms))
   
   
 #saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
-saveRDS(stream_selected_c, file = "DataVisualizationApp/Data/stream_selected_c_clean.rds")
+saveRDS(stream_selected_c, file = "DataVisualizationApp/Data/stream_selected_c_clean_w_names.rds")
 
