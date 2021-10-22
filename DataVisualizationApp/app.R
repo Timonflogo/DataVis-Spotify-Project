@@ -66,7 +66,13 @@ server <- function(input,output){
         filter_end_date <<- sort(data$date,decreasing = TRUE)[1] # <<- to assign to global env.
         
         #Return the data
-        df[date >= filter_start_date & date <= filter_end_date,]
+        if (!length(current_artist())) {
+            return(
+                df[date >= filter_start_date & date <= filter_end_date,]
+            )
+        }
+        
+        df[date >= filter_start_date & date <= filter_end_date & artist_id == current_artist(),]
         
     })
     
