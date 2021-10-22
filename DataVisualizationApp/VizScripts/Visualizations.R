@@ -76,3 +76,63 @@ radarplot <- function(dataInput1){
                 vlcex=0.8
     )
 }
+
+## Barchart ----
+
+### Barchart data ----
+
+df_barchart <- function(dataInput1,current_artist = current_artist()
+                          ,NumArtists = 10,NumTracks = 10){
+  
+  #Checks if there is selected an artist. If not then:
+  if (!length(current_artist)) {
+    return(
+      df_barchart <- dataInput1 %>% 
+        group_by(artist_id) %>% 
+        summarise(msPlayed = sum(msPlayed)) %>%
+        mutate(hsPlayed = msPlayed/3600000) %>% 
+        select(-msPlayed) %>% 
+        arrange(desc(hsPlayed)) %>% 
+        top_n(n = ifelse(test = is.blank(NumArtists),yes = 10,no = NumArtists))
+    )
+  }
+  
+  #Else the following is run:
+  df_barchart <- dataInput1 %>% 
+    filter(artist_id %in% current_artist) %>% 
+    group_by(track_id) %>% 
+    summarise(msPlayed = sum(msPlayed)) %>% 
+    mutate(hsPlayed = msPlayed/3600000) %>% 
+    select(-msPlayed) %>% 
+    arrange(desc(hsPlayed)) %>% 
+    top_n(n = ifelse(test = is.blank(NumTracks),yes = 10,no = NumTracks))
+  
+  #Return the data frame which is used for the plot
+  return(df_barchart)
+}
+
+### Barchart plot ----
+
+barchart <- function(dataInput1,current_artist = current_artist()){
+  
+  #Creating a dataframe where the variables are fixed to be named x and y
+  d <- setNames(object = dataInput1,nm = c("x", "y"))
+  
+  #Plotting the barchart
+  plot_ly(data = d
+          ,x = ~reorder(x,desc(y)), y = ~y
+          ,type = "bar") %>%
+    layout(title = current_artist %||% "Artist") #go for current Artist unless else is selected
+}
+
+    # Script for the sercer
+
+      # #### Data for the bar chart ----
+      # 
+      # barchart_data <- reactive({
+      #   df_barchart(dataInput1 = masterData(),current_artist = current_artist(),NumArtists = input$NumArtists,NumTracks = input$NumTracks)
+      # })
+      # 
+      # output$bar <- renderPlotly({
+      #   barchart(dataInput1 = barchart_data(),current_artist = current_artist())
+      # })

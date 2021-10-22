@@ -66,7 +66,13 @@ server <- function(input,output){
     filter_end_date <<- sort(data$date,decreasing = TRUE)[1] # <<- to assign to global env.
     
     #Return the data
-    df[date >= filter_start_date & date <= filter_end_date,]
+    if (!length(current_artist())) {
+      return(
+        df[date >= filter_start_date & date <= filter_end_date,]
+      )
+    }
+    
+    df[date >= filter_start_date & date <= filter_end_date & artist_id == current_artist(),]
     
   })
   
@@ -99,58 +105,66 @@ server <- function(input,output){
   
   ### Drill down bar chart ----
   
-  current_category <- reactiveVal()
+  current_artist <- reactiveVal() #This function is a container of the selected artist
   
   #### Data for the bar chart ----
   
-  barplot_data <- reactive({
-    
-    if (!length(current_category())) {
-      return(
-        df_barchart <- masterData() %>% 
-          group_by(artist_id) %>% 
-          summarise(msPlayed = sum(msPlayed)) %>%
-          mutate(hsPlayed = msPlayed/3600000) %>% 
-          select(-msPlayed) %>% 
-          arrange(desc(hsPlayed)) %>% 
-          top_n(n = ifelse(test = is.blank(input$NumArtists),yes = 10,no = input$NumArtists))
-        )
-    }
-    
-    df_barchart <- masterData() %>% 
-      filter(artist_id %in% current_category()) %>% 
-      group_by(track_id) %>% 
-      summarise(msPlayed = sum(msPlayed)) %>% 
-      mutate(hsPlayed = msPlayed/3600000) %>% 
-      select(-msPlayed) %>% 
-      arrange(desc(hsPlayed)) %>% 
-      top_n(n = ifelse(test = is.blank(input$NumTracks),yes = 10,no = input$NumTracks))
+  # barplot_data <- reactive({
+  #   
+  #   if (!length(current_artist())) {
+  #     return(
+  #       df_barchart <- masterData() %>% 
+  #         group_by(artist_id) %>% 
+  #         summarise(msPlayed = sum(msPlayed)) %>%
+  #         mutate(hsPlayed = msPlayed/3600000) %>% 
+  #         select(-msPlayed) %>% 
+  #         arrange(desc(hsPlayed)) %>% 
+  #         top_n(n = ifelse(test = is.blank(input$NumArtists),yes = 10,no = input$NumArtists))
+  #     )
+  #   }
+  #   
+  #   df_barchart <- masterData() %>% 
+  #     filter(artist_id %in% current_artist()) %>% 
+  #     group_by(track_id) %>% 
+  #     summarise(msPlayed = sum(msPlayed)) %>% 
+  #     mutate(hsPlayed = msPlayed/3600000) %>% 
+  #     select(-msPlayed) %>% 
+  #     arrange(desc(hsPlayed)) %>% 
+  #     top_n(n = ifelse(test = is.blank(input$NumTracks),yes = 10,no = input$NumTracks))
+  # })
+  
+  # output$bar <- renderPlotly({
+  #   d <- setNames(object = barplot_data(),nm = c("x", "y"))
+  #   
+  #   plot_ly(data = d
+  #           ,x = ~reorder(x,desc(y)), y = ~y
+  #           ,type = "bar") %>%
+  #     layout(title = current_artist() %||% "Artist") #go for current Artist unless else is selected
+  #   
+  # })
+  
+  barchart_data <- reactive({
+    df_barchart(dataInput1 = masterData(),current_artist = current_artist(),NumArtists = input$NumArtists,NumTracks = input$NumTracks)
   })
   
   output$bar <- renderPlotly({
-    d <- setNames(object = barplot_data(),nm = c("x", "y"))
-  
-    plot_ly(data = d
-            ,x = ~reorder(x,desc(y)), y = ~y
-            ,type = "bar") %>%
-    layout(title = current_category() %||% "Artist") #go for current Artist unless else is selected
-    
+    barchart(dataInput1 = barchart_data(),current_artist = current_artist())
   })
   
   # update the current category when appropriate
   observe({
     cd <- event_data("plotly_click")$x #x = the label
-    if (isTRUE(cd %in% categories)) current_category(cd)
+    if (isTRUE(cd %in% categories)) current_artist(cd)
   })
   
   # populate back button if category is chosen
   output$back <- renderUI({
-    if (length(current_category())) 
+    if (length(current_artist())) 
       actionButton("clear", "Back", icon("chevron-left"))
   })
   
   # clear the chosen category on back button press
-  observeEvent(input$clear, current_category(NULL))
+  observeEvent(input$clear, current_artist(NULL))
   
   
   
@@ -159,7 +173,7 @@ server <- function(input,output){
   ## Test ----
   
   output$BrushedData <- renderDataTable({
-    barplot_data()
+    barchart_data()
   })
   
 }
