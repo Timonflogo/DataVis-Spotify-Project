@@ -99,13 +99,13 @@ server <- function(input,output){
     
     ### Drill down bar chart ----
     
-    current_category <- reactiveVal()
+    current_artist <- reactiveVal() #This function is a container of the selected artist
     
     #### Data for the bar chart ----
     
     barplot_data <- reactive({
         
-        if (!length(current_category())) {
+        if (!length(current_artist())) {
             return(
                 df_barchart <- masterData() %>% 
                     group_by(artist_id) %>% 
@@ -118,7 +118,7 @@ server <- function(input,output){
         }
         
         df_barchart <- masterData() %>% 
-            filter(artist_id %in% current_category()) %>% 
+            filter(artist_id %in% current_artist()) %>% 
             group_by(track_id) %>% 
             summarise(msPlayed = sum(msPlayed)) %>% 
             mutate(hsPlayed = msPlayed/3600000) %>% 
@@ -133,24 +133,24 @@ server <- function(input,output){
         plot_ly(data = d
                 ,x = ~reorder(x,desc(y)), y = ~y
                 ,type = "bar") %>%
-            layout(title = current_category() %||% "Artist") #go for current Artist unless else is selected
+            layout(title = current_artist() %||% "Artist") #go for current Artist unless else is selected
         
     })
     
     # update the current category when appropriate
     observe({
         cd <- event_data("plotly_click")$x #x = the label
-        if (isTRUE(cd %in% categories)) current_category(cd)
+        if (isTRUE(cd %in% categories)) current_artist(cd)
     })
     
     # populate back button if category is chosen
     output$back <- renderUI({
-        if (length(current_category())) 
+        if (length(current_artist())) 
             actionButton("clear", "Back", icon("chevron-left"))
     })
     
     # clear the chosen category on back button press
-    observeEvent(input$clear, current_category(NULL))
+    observeEvent(input$clear, current_artist(NULL))
     
     
     
