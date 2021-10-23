@@ -29,22 +29,31 @@ categories <- unique(df$artist_id)
 
 # UI ----
 ui <- fluidPage(
+    tags$style('.container-fluid {
+                        background: linear-gradient(120deg, #1db954, #191414);
+              }'),
     theme = shinytheme("cerulean"),
     fluid = TRUE,
     titlePanel("Spotify streaming"),
     
     sidebarLayout(
         # Define the sidebar with one input
-        sidebarPanel(width = 2,
-            helpText(textOutput(outputId = "FilterText"))
+        sidebarPanel(width = 4,
+            helpText(textOutput(outputId = "FilterText")),
+            plotOutput(outputId = "Radarchart"),
+            plotlyOutput("bar"),
+            uiOutput("back")
         ),
         
         # Main panel for page 1
-        mainPanel(plotOutput(
+        mainPanel(
+            plotOutput(
             outputId = "Streamgraph",
             brush = brushOpts(id = "plot1_brush",
                               direction = "x")
-        ), width = 10), 
+        ),
+        plotOutput(outputId = "Ribbonchart"),
+        width = 8)
         # column(
         #     width = 12,
         #     style = 'padding:0px;',
@@ -106,7 +115,7 @@ server <- function(input, output) {
         masterData() #To activate the master data function
         paste0("You have filtered your data from: ",
                filter_start_date,
-               "<br> to <br>",
+               " to ",
                filter_end_date)
     })
     
