@@ -22,7 +22,7 @@ streamgraph <- function(dataInput1){
 ## Ribbon chart ---- 
 ribbonchart <- function(dataInput1){
   stream_group_weekday <- dataInput1 %>% 
-    melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% 
+    melt(1:13) %>% # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% # dont use this, its not working
     group_by(weekday, variable) %>% 
     summarise(value = sum(value)) %>% 
     mutate(weekday = ordered(weekday, levels=c("Monday", "Tuesday", "Wednesday", "Thursday", 
@@ -51,7 +51,7 @@ ribbonchart <- function(dataInput1){
 radarplot <- function(dataInput1){
   
   radar_gg <- dataInput1 %>%
-    melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>%
+    melt(1:13) %>%  # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% dont use this, its not working
     group_by(variable) %>%
     summarise(value = mean(value)) %>% 
     spread(variable, value)
