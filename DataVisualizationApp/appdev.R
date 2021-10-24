@@ -8,7 +8,7 @@ source("ConvenienceFunctions/ConvenienceFunctions.R")
 source("VizScripts/Visualizations.R")
 source("Data/stream_group_data.R")
 
-categories <- unique(df$artist_id)
+categories <- unique(df$artistName)
 
 # UI ----
 ui <- navbarPage(
@@ -42,6 +42,8 @@ ui <- navbarPage(
              
              uiOutput("back"),
              
+             textOutput(outputId = "c_artist"),
+             
              dataTableOutput(outputId = "BrushedData"),
              
              width = 11
@@ -72,7 +74,7 @@ server <- function(input,output){
       )
     }
     
-    df[date >= filter_start_date & date <= filter_end_date & artist_id == current_artist(),]
+    df[date >= filter_start_date & date <= filter_end_date & artistName == current_artist(),]
     
   })
   
@@ -107,41 +109,11 @@ server <- function(input,output){
   
   current_artist <- reactiveVal() #This function is a container of the selected artist
   
+  output$c_artist <- renderText({
+    current_artist()
+  })
+  
   #### Data for the bar chart ----
-  
-  # barplot_data <- reactive({
-  #   
-  #   if (!length(current_artist())) {
-  #     return(
-  #       df_barchart <- masterData() %>% 
-  #         group_by(artist_id) %>% 
-  #         summarise(msPlayed = sum(msPlayed)) %>%
-  #         mutate(hsPlayed = msPlayed/3600000) %>% 
-  #         select(-msPlayed) %>% 
-  #         arrange(desc(hsPlayed)) %>% 
-  #         top_n(n = ifelse(test = is.blank(input$NumArtists),yes = 10,no = input$NumArtists))
-  #     )
-  #   }
-  #   
-  #   df_barchart <- masterData() %>% 
-  #     filter(artist_id %in% current_artist()) %>% 
-  #     group_by(track_id) %>% 
-  #     summarise(msPlayed = sum(msPlayed)) %>% 
-  #     mutate(hsPlayed = msPlayed/3600000) %>% 
-  #     select(-msPlayed) %>% 
-  #     arrange(desc(hsPlayed)) %>% 
-  #     top_n(n = ifelse(test = is.blank(input$NumTracks),yes = 10,no = input$NumTracks))
-  # })
-  
-  # output$bar <- renderPlotly({
-  #   d <- setNames(object = barplot_data(),nm = c("x", "y"))
-  #   
-  #   plot_ly(data = d
-  #           ,x = ~reorder(x,desc(y)), y = ~y
-  #           ,type = "bar") %>%
-  #     layout(title = current_artist() %||% "Artist") #go for current Artist unless else is selected
-  #   
-  # })
   
   barchart_data <- reactive({
     df_barchart(dataInput1 = masterData(),current_artist = current_artist(),NumArtists = input$NumArtists,NumTracks = input$NumTracks)

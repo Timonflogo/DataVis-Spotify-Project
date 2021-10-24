@@ -103,7 +103,6 @@ stream_selected_c <- stream_selected_c %>%
                                     , format = "%Y-%m-%d %H:%M")
                          , "%H:%M:%S")) %>% 
   mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
-  #mutate(week_number = )
   mutate(year_week = as.numeric(strftime(date, format = "%Y%W")) + 1) %>% 
   mutate(start_day_week = floor_date(date,unit = "week", week_start = 1)) %>% 
   mutate(month = months(start_day_week)) %>% 
@@ -121,5 +120,5 @@ stream_selected_c <- stream_selected_c %>%
   
   
 #saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
-saveRDS(stream_selected_c, file = "DataVisualizationApp/Data/stream_selected_c_clean_w_names.rds")
+saveRDS(stream_selected_c, file = "DataVisualizationApp/Data/stream_selected_c_clean.rds")
 
