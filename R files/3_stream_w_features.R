@@ -70,28 +70,31 @@ stream_full_features <- stream_full_features %>%
 
 # Selecting columns to work with since some are irrelevant
 stream_selected_c <- stream_full_features %>% 
-  select(trackName
-         , artistName
-         , artist_id
-         , track_id
-         , msPlayed
-         , endTime
-         , duration_ms
-         , 9, 10, 12, 14:19) %>% 
+  select(artist_id
+         ,artistName
+         ,track_id
+         ,trackName
+         ,msPlayed
+         ,endTime
+         ,duration_ms
+         ,danceability
+         ,energy
+         ,loudness
+         ,speechiness:tempo) %>%
   # standardizing features into range of 0 - 1
   mutate_at(scales::rescale
-            , .vars = vars(danceability :tempo))
+            , .vars = vars(danceability:tempo))
 
 # Calculating the features per ms to have a single unit for aggregation
-stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[8:16]
-                                                        , "_per_ms") := lapply(.SD,`/`, stream_selected_c$duration_ms)
-                                               , .SDcols = 8 : 16]
-
+stream_selected_c <-
+  setDT(stream_selected_c)[, paste0(names(stream_selected_c)[which(names(stream_selected_c)== "danceability"):which(names(stream_selected_c)== "tempo")]
+                                    , "_per_ms") := lapply(.SD, `/`, stream_selected_c$duration_ms)
+                           , .SDcols = danceability:tempo]
 # Calculating the features value based on how long the track was actually played 
-stream_selected_c <- setDT(stream_selected_c)[ , paste0(names(stream_selected_c)[8:16]
-                                                        , "_exposed") := lapply(.SD,`*`, stream_selected_c$msPlayed)
-                                               , .SDcols = 17 : 25]
-
+stream_selected_c <-
+  setDT(stream_selected_c)[, paste0(names(stream_selected_c)[which(names(stream_selected_c)== "danceability"):which(names(stream_selected_c)== "tempo")]
+                                    , "_exposed") := lapply(.SD, `*`, stream_selected_c$msPlayed)
+                           , .SDcols = danceability_per_ms:tempo_per_ms]
 # replacing inf vcalues with 0 
 stream_selected_c <- stream_selected_c %>% 
   mutate_all(function(x) ifelse(is.infinite(x), 0, x))
@@ -116,9 +119,18 @@ stream_selected_c <- stream_selected_c %>%
   relocate(c(track_id
              , artist_id)
            , .before = trackName) %>% 
-  select(-c(danceability:tempo_per_ms))
+  select(-c(danceability:tempo_per_ms)) %>% 
+  inner_join(readRDS('DataVisualizationApp/Data/artist_genre_split.rds')
+             , by = 'artist_id') %>% 
+  relocate(genre
+           , .after = artistName)
   
+# artist_genre <- readRDS('DataVisualizationApp/Data/artist_genre_split.rds') %>% 
+#   inner_join(stream_selected_c
+#              , by = 'artist_id')
+
+
   
-#saveRDS(stream_selected_c, file = "R dataframe/stream_selected_c_clean.rds")
-saveRDS(stream_selected_c, file = "DataVisualizationApp/Data/stream_selected_c_clean.rds")
+# saveRDS(stream_selected_c, file = "R_dataframe/stream_selected_c_clean.rds")
+
 
