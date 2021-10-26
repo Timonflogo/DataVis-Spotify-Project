@@ -118,6 +118,41 @@ initializeEnvironmentAndGetData <-
           pblapply(X = df_unique$track_artist, FUN = f_track_id)
       }, gcFirst = TRUE)
       
+      ## Extracting the first entry for all rows. In case there are multiple artists
+      temp_df_unique_artist_id <- str_split(
+        string = df_unique$artist_id,pattern = ",",n = 2,
+        simplify = TRUE) %>% #splitting artist_id into 2 columns - main artist and the rest
+        as.data.frame() %>%
+        select(1) %>% # selecting the first artist
+        rename('artist_id' = "V1") %>% # Renaming the column back to artist_id
+        unlist() %>% # unlist in order to use str_replace
+        # Cleaning the artist_id from 'c' and brackets
+        str_replace(pattern = 'c\\("'
+                    , replacement = "") %>%
+        str_replace(pattern = '"'
+                    , replacement = "") %>%
+        as.data.frame() %>% # Setting it back into a dataframe
+        rename('artist_id' = ".") #renaming it back to artist_id
+      
+      df_unique$artist_id <- temp_df_unique_artist_id$artist_id
+      
+      temp_df_unique_artist_name <- str_split(
+        string = df_unique$artist_name,pattern = ",",n = 2,#string = df_unique$artist_name,pattern = ",",n = 2,
+        simplify = TRUE) %>% #splitting artist_id into 2 columns - main artist and the rest
+        as.data.frame() %>%
+        select(1) %>% # selecting the first artist
+        rename('artist_name' = "V1") %>% # Renaming the column back to artist_id
+        unlist() %>% # unlist in order to use str_replace
+        # Cleaning the artist_id from 'c' and brackets
+        str_replace(pattern = 'c\\("'
+                    , replacement = "") %>%
+        str_replace(pattern = '"'
+                    , replacement = "") %>%
+        as.data.frame() %>% # Setting it back into a dataframe
+        rename('artist_name' = ".") #renaming it back to artist_id
+      
+      df_unique$artist_name <- temp_df_unique_artist_name$artist_name
+      
       saveRDS(df_unique, file = "Data/artist_id.rds")
     } else {
       message("GetIDs = FALSE, hence the artist id, artist name and track ids will not be retrieved.")
@@ -175,7 +210,7 @@ initializeEnvironmentAndGetData <-
         mutate(track_id = unlist(joined_df$track_id)) %>% #Unlist track_id to make it a vector that can be used for the join
         left_join(df_track_features
                   , by = 'track_id'
-                  )
+        )
       
       saveRDS(main_df, file = "Data/get_track_features.rds")
       
