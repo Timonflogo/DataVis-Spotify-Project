@@ -24,6 +24,8 @@ df <- readRDS("Data/stream_selected_c_clean.rds")
 source("ConvenienceFunctions/ConvenienceFunctions.R")
 source("VizScripts/Visualizations.R")
 source("Data/stream_group_data.R")
+source("summary-statistics.R")
+
 
 categories <- unique(df$artist_id)
 
@@ -40,7 +42,9 @@ ui = htmlTemplate(
     
     Ribbonchart_plot = plotOutput(outputId = "Ribbonchart"),
     
-    Sliced_period = textOutput(outputId = "FilterText")
+    Sliced_period = textOutput(outputId = "FilterText"),
+    
+    ttp_text = textOutput(outputId = "TotalTimePlayed")
 )
 
 
@@ -141,6 +145,11 @@ server <- function(input, output) {
                filter_start_date,
                " to ",
                filter_end_date)
+    })
+    
+    ### Summary Statistics ----
+    output$TotalTimePlayed <- renderText({
+        as.numeric(TotalTimePlayed(dataInput1 = masterData()))
     })
     
     ## Viz ----
