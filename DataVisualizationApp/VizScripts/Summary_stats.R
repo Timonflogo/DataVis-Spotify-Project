@@ -8,10 +8,10 @@ library(hms)
 # }
 # total_time_played <- round(seconds_to_period(sum(d$msPlayed) / 1000), 0)
 
-total_songs_played <- function(d){
-  total_time_played <- round(seconds_to_period(sum(d$msPlayed) / 1000), 0)
+total_songs_played <- function(dataInput1){
+  total_time_played <- round(seconds_to_period(sum(dataInput1$msPlayed) / 1000), 0)
   print(paste('You have played'
-              , nrow(d)
+              , nrow(dataInput1)
               , 'songs which is equal to'
               , total_time_played))
 }
