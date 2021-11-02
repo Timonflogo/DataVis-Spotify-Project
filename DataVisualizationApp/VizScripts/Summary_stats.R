@@ -3,23 +3,32 @@ library(dplyr)
 library(lubridate)
 library(hms)
 
-total_time_played <- function(dataInput1){
-  round(seconds_to_period(sum(d$dataInput1) / 1000), 0)
-}
+# total_time_played <- function(dataInput1){
+#   round(seconds_to_period(sum(dataInput1$msPlayed) / 1000), 0)
+# }
 # total_time_played <- round(seconds_to_period(sum(d$msPlayed) / 1000), 0)
 
-total_songs_played <- function(dataInput1){
-  nrow(dataInput1)
+total_songs_played <- function(d){
+  total_time_played <- round(seconds_to_period(sum(d$msPlayed) / 1000), 0)
+  print(paste('You have played'
+              , nrow(d)
+              , 'songs which is equal to'
+              , total_time_played))
 }
+total_songs_played(d)
+
 # total_songs_played <- nrow(d)
 
 total_unique_songs_played <- function(dataInput1){
-  dataInput1 %>% 
+  unique_songs <- dataInput1 %>% 
     group_by(artistName
              , trackName) %>% 
     summarise(freq = n()) %>% 
     ungroup() %>% 
     nrow()
+  print(paste('You have listened to'
+              , unique_songs
+              , 'different songs'))
 }
 # total_unique_songs_played <- d %>% 
 #   group_by(artistName
@@ -29,14 +38,18 @@ total_unique_songs_played <- function(dataInput1){
 #   nrow()
 
 total_unique_artist_played <- function(dataInput1){
-  dataInput1 %>% 
+  uniq_artist <- dataInput1 %>% 
     group_by(artistName
              , trackName) %>% 
     summarise(freq = n()) %>% 
     select(artistName) %>% 
     unique() %>% 
     nrow()
+  print(paste('You have listened to'
+              , uniq_artist
+              , 'different artists'))
 }
+
 # total_unique_artist_played <- d %>% 
 #   group_by(artistName
 #            , trackName) %>% 
@@ -56,7 +69,7 @@ favourite_artist <- function(dataInput1){
   artist_name <- temp$artistName
   freq_played <- temp$freq_played
   total_time_played <- temp$total_time_played
-  print(paste('Your favourite artist '
+  print(paste('Your favourite artist'
               , artist_name
               , 'was played '
               , freq_played
@@ -85,9 +98,9 @@ favourite_track <- function(dataInput1){
   artistName <- temp$artistName
   freq_played <- temp$freq_played
   total_songs_played <- temp$total_time_played
-  print(paste('Your most listned track is '
+  print(paste('Your most listned track is'
               , trackName
-              , 'from '
+              , 'from'
               , artistName
               , 'and it was listened for'
               , freq_played
