@@ -28,56 +28,79 @@ source("Data/stream_group_data.R")
 categories <- unique(df$artist_id)
 
 # UI ----
-ui <- fluidPage(
-    tags$style('.container-fluid {
-                        background: linear-gradient(120deg, #1db954, #191414);
-              }'),
-    theme = shinytheme("cerulean"),
-    fluid = TRUE,
-    titlePanel("Spotify streaming"),
+ui = htmlTemplate(
+    # Index Page
+    filename = "www/index.html",
+
+    Streamchart_plot = plotOutput(
+                    outputId = "Streamgraph",
+                    brush = brushOpts(id = "plot1_brush",
+                                      direction = "x")
+    ),
     
-    sidebarLayout(
-        # Define the sidebar with one input
-        sidebarPanel(width = 4,
-            helpText(textOutput(outputId = "FilterText")),
-            plotOutput(outputId = "Radarchart"),
-            plotlyOutput("bar"),
-            uiOutput("back")
-        ),
-        
-        # Main panel for page 1
-        mainPanel(
-            plotOutput(
-            outputId = "Streamgraph",
-            brush = brushOpts(id = "plot1_brush",
-                              direction = "x")
-        ),
-        plotOutput(outputId = "Ribbonchart"),
-        width = 8)
+    Ribbonchart_plot = plotOutput(outputId = "Ribbonchart"),
+    
+    Sliced_period = textOutput(outputId = "FilterText")
+)
+
+
+    # plot1 = plotOutput(
+    #     "plot1"
+    # )
+#)
+
+# ui <- fluidPage(
+#     tags$style('.container-fluid {
+#                         background: linear-gradient(120deg, #1db954, #191414);
+#               }'),
+#     theme = shinytheme("cerulean"),
+#     fluid = TRUE,
+#     titlePanel("Spotify streaming"),
+# 
+#     sidebarLayout(
+#         # Define the sidebar with one input
+#         sidebarPanel(width = 4,
+#             helpText(textOutput(outputId = "FilterText")),
+#             plotOutput(outputId = "Radarchart"),
+#             plotlyOutput("bar"),
+#             uiOutput("back")
+#         ),
+# 
+#         # Main panel for page 1
+#         mainPanel(
+#             plotOutput(
+#             outputId = "Streamgraph",
+#             brush = brushOpts(id = "plot1_brush",
+#                               direction = "x")
+#         ),
+#         plotOutput(outputId = "Ribbonchart"),
+#         width = 8)
+#     )
+# )
+
         # column(
         #     width = 12,
         #     style = 'padding:0px;',
         #     plotOutput(
         #         outputId = "Ribbonchart")
         #     )
-        
-        # plotOutput(outputId = "Ribbonchart"),
-        #
-        # plotOutput(outputId = "Radarchart"),
-        #
-        # textOutput(outputId = "FilterText"),
-        #
-        # numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50),
-        # numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50),
-        #
-        # plotlyOutput("bar"),
-        #
-        # uiOutput("back"),
-        #
-        # dataTableOutput(outputId = "BrushedData"),
-        #
-    )
-)
+
+#         plotOutput(outputId = "Ribbonchart"),
+# 
+#         plotOutput(outputId = "Radarchart"),
+# 
+#         textOutput(outputId = "FilterText"),
+# 
+#         numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50),
+#         numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50),
+# 
+#         plotlyOutput("bar"),
+# 
+#         uiOutput("back"),
+# 
+#         dataTableOutput(outputId = "BrushedData"),
+# 
+
 
 
 
@@ -85,6 +108,7 @@ ui <- fluidPage(
 # Server ----
 server <- function(input, output) {
     ## Getting data ----
+    df <- readRDS("Data/stream_selected_c_clean.rds")
     
     ### masterData ----
     masterData <- reactive({
@@ -120,6 +144,9 @@ server <- function(input, output) {
     })
     
     ## Viz ----
+    
+    ### test
+    output$plot1 <- renderPlot(df[,c(15,16)])
     
     ### Streamgraph ----
     output$Streamgraph <- renderPlot({
