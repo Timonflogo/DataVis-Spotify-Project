@@ -69,6 +69,7 @@ radarplot <- function(dataInput1){
   colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
   
   # plot with default options:
+  par(bg = '#E6E6E6')
   radarchart( radar_gg, axistype=1 ,vlabels = cap_space(colnames(radar_gg)),
               #custom polygon
               pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
@@ -126,5 +127,7 @@ barchart <- function(dataInput1,current_artist = current_artist()){
   plot_ly(data = d
           ,x = ~reorder(x,desc(y)), y = ~y
           ,type = "bar") %>%
-    layout(title = current_artist %||% "Artist") #go for current Artist unless else is selected
+    layout(title = current_artist %||% "Artist") %>%  #go for current Artist unless else is selected
+    layout(plot_bgcolor='#E6E6E6') %>% 
+    layout(paper_bgcolor='#E6E6E6')
 }
