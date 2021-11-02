@@ -6,10 +6,14 @@ streamgraph <- function(dataInput1){
   ggplot(stream_group_date, aes(x = index, y = value, fill = cap_space(string = variable))) +
     geom_stream(n_grid = 375,bw = 0.50) + #bw = wigglyness
     scale_fill_manual(values = RColorBrewer::brewer.pal(n = 9,name = 'Blues')) +
-    theme(panel.background = element_blank()
+    theme(plot.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6")
+          ,panel.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6") 
           ,panel.grid.major.x = element_line(size = 0.3, color="black",linetype = "dotted")
+          ,panel.grid.minor = element_blank() #Remove gridlines
+          ,panel.grid.major.y = element_blank() #Remove gridlines
           ,axis.text.x = element_text(angle = 0)
           ,axis.ticks = element_blank()
+          ,legend.background = element_rect(fill = "#E6E6E6")
     ) +
     scale_x_continuous(labels = stream_group_date$month[idx]
                        ,breaks = stream_group_date$index[idx]
@@ -37,11 +41,13 @@ ribbonchart <- function(dataInput1){
                   , alpha = .75
                   , decreasing = FALSE
                   , linetype = 0) +
-    theme(panel.background = element_blank()
-          , panel.grid.major.x = element_line(size = 0.3
-                                              , color="black"
-                                              ,linetype = "dotted")
-          , axis.ticks = element_blank()) +
+    theme(plot.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6")
+          ,panel.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6") 
+          ,panel.grid.major.x = element_line(size = 0.3, color="black",linetype = "dotted")
+          ,panel.grid.minor = element_blank() #Remove gridlines
+          ,panel.grid.major.y = element_blank() #Remove gridlines
+          ,legend.background = element_rect(fill = "#E6E6E6")
+          ,axis.ticks = element_blank()) +
     labs(fill = 'Features',x = "Time")
 }
 
