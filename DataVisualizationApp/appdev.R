@@ -6,6 +6,7 @@ pacman::p_load(reshape2,ggplot2,ggstream,streamgraph,RColorBrewer,Hmisc,dplyr,gr
 df <- readRDS("Data/stream_selected_c_clean.rds")
 source("ConvenienceFunctions/ConvenienceFunctions.R")
 source("VizScripts/Visualizations.R")
+source("VizScripts/Streamgraph.R")
 source("Data/stream_group_data.R")
 
 categories <- unique(df$artistName)
