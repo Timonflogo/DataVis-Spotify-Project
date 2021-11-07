@@ -1,15 +1,21 @@
 ## Libraries
-pacman::p_load("jsonlite"
-               , "dplyr"
+pacman::p_load("dplyr"
                , "plotly"
 )
 
-time_listened <- readRDS("Data/stream_selected_c_clean.rds") %>% 
+df <- readRDS("Data/stream_selected_c_clean.rds") 
+
+options(scipen=999)
+time_listened <- df %>% 
   group_by(artistName
            , trackName) %>% 
-  summarise(time_played_hours = sum(msPlayed) / 3.6e+6)
+  summarise(time_played_minutes = sum(msPlayed) / 60000) %>% 
+  ungroup() %>% 
+  mutate(time_played_minutes = round(time_played_minutes,2)) 
 
-d <- readRDS("Data/stream_selected_c_clean.rds") %>% 
+
+
+d <- df %>% 
   distinct(artistName
            , trackName
            , duration_ms
@@ -23,11 +29,17 @@ d <- readRDS("Data/stream_selected_c_clean.rds") %>%
            , valence
            , tempo)
 
+# percent_select <- round(nrow(time_listened) * 0.1 # replace to be reactive
+#                         ,0)
+
 d <- d %>% 
   left_join(time_listened
             , by = c('artistName' = 'artistName'
                      , 'trackName' = 'trackName')) %>% 
-  mutate(bin = ntile(time_played_hours, 5))
+  mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs = 0.9) & time_played_minutes <= quantile(time_played_minutes,probs = 1)
+                      ,yes = '#FF0000',no = '#0000FF')) %>% 
+  mutate(bin = factor(bin, levels = c('#FF0000', '#0000FF'))) %>% 
+  filter(time_played_minutes > 5)
 
 pl_colorscale = list(c(0.0, '#119dff'),
                      c(0.5, '#119dff'),
@@ -41,7 +53,7 @@ axis = list(showline=FALSE,
             titlefont=list(size=13))
 
 test <- d %>%
-  plot_ly(split = ~ as.factor(bin)) 
+  plot_ly()
 
 test <- test %>%
   add_trace(
@@ -60,13 +72,13 @@ test <- test %>%
     text = ~ factor(trackName, labels = unique(trackName)),
     diagonal=list(visible=F),
     marker = list(
-      #color = ~ bin,
+      color = ~ bin,
       colorscale = pl_colorscale,
       size = 5,
-      opacity=0.5,
+      opacity=0.1,
       line = list(
-        width = 1,
-        color = 'rgb(230,230,230)'
+        width = 1
+        #, color = 'rgb(0,230,230)'
       )
     )
   ) 
