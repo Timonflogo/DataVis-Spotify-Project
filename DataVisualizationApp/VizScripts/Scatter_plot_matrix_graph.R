@@ -1,16 +1,10 @@
 ## Libraries
 pacman::p_load("jsonlite"
                , "dplyr"
-               , "tidyr"
-               , "spotifyr"
-               , "pbapply"
-               , "stringr"
-               , "data.table"
-               , "lubridate"
                , "plotly"
 )
 
-d <- read_rds("Data/stream_selected_c_clean.rds") %>% 
+d <- readRDS("Data/stream_selected_c_clean.rds") %>% 
   distinct(artistName
            , trackName
            , duration_ms
