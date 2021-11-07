@@ -1,6 +1,6 @@
 # Libraries
 pacman::p_load(reshape2,ggplot2,ggstream,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra,shiny,shinythemes
-               ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb,ragtop)
+               ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb,ragtop,)
 
 # Commands to run on initiating the app
 df <- readRDS("Data/stream_selected_c_clean.rds")
@@ -49,7 +49,7 @@ ui <- navbarPage(
                         )
              ),
              
-             plotOutput(outputId = "Ribbonchart"),
+             plotlyOutput(outputId = "Linechart"),
              
              plotOutput(outputId = "Radarchart"),
              
@@ -124,10 +124,10 @@ server <- function(input,output){
   }
   )
   
-  ### Ribbon chart ----
+  ### Line chart ----
   
-  output$Ribbonchart <- renderPlot({
-    ribbonchart(dataInput1 = masterData())
+  output$Linechart <- renderPlotly({
+    linechart(dataInput1 = masterData())
   })
   
   ### Radar chart ----
