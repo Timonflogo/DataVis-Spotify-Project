@@ -1,6 +1,6 @@
 # Libraries
 pacman::p_load(reshape2,ggplot2,ggstream,streamgraph,RColorBrewer,Hmisc,dplyr,gridExtra,shiny,shinythemes
-               ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb,ragtop,)
+               ,shinyWidgets,plotly,tidyverse,ggalluvial,fmsb,ragtop,lubridate)
 
 # Commands to run on initiating the app
 df <- readRDS("Data/stream_selected_c_clean.rds")
@@ -21,7 +21,7 @@ ui <- navbarPage(
   tabPanel(title = "Welcome",
            h1("Introduction"),
            
-           textOutput(outputId = "introText"),
+           # textOutput(outputId = "introText"),
 
            p(),
            
@@ -37,12 +37,15 @@ ui <- navbarPage(
   ),
   
   ## Tab 1 - Welcome -----
-  tabPanel(title = "Welcome",
+  tabPanel(title = "Overview",
            h3("Spotify"),
            p("This is some text introduction"),
            
            # Main panel for page 1
            mainPanel(
+             tags$style('.container-fluid {
+                             background-color: #E6E6E6;
+              }'),
              plotOutput(outputId = "Streamgraph", 
                         brush = brushOpts(id = "plot1_brush", 
                                           direction = "x"
