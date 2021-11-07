@@ -83,9 +83,9 @@ server <- function(input,output){
   masterData <- reactive({
     
     df <- readRDS("Data/stream_selected_c_clean.rds")
-    data <- brushedPoints(df = stream_group_date,brush = input$plot1_brush)
+    data <- brushedPoints(df = stream_group_date_artist,brush = input$plot1_brush)
     if (nrow(data) == 0)
-      data <- stream_group_date
+      data <- stream_group_date_artist
     
     filter_start_date <<- sort(data$date,decreasing = FALSE)[1] # <<- to assign to global env.
     filter_end_date <<- sort(data$date,decreasing = TRUE)[1] # <<- to assign to global env.
