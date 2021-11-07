@@ -39,6 +39,7 @@ d <- d %>%
   mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs = 0.9) & time_played_minutes <= quantile(time_played_minutes,probs = 1)
                       ,yes = '#FF0000',no = '#0000FF')) %>% 
   mutate(bin = factor(bin, levels = c('#FF0000', '#0000FF'))) %>% 
+  mutate(opacity =  ifelse(bin == '#FF0000', 1, 0.2)) %>% 
   filter(time_played_minutes > 5)
 
 pl_colorscale = list(c(0.0, '#119dff'),
@@ -52,10 +53,10 @@ axis = list(showline=FALSE,
             ticklen=4,
             titlefont=list(size=13))
 
-test <- d %>%
+scatter_plot <- d %>%
   plot_ly()
 
-test <- test %>%
+scatter_plot <- scatter_plot %>%
   add_trace(
     type = 'splom',
     dimensions = list(
@@ -73,16 +74,17 @@ test <- test %>%
     diagonal=list(visible=F),
     marker = list(
       color = ~ bin,
+      group = ~ bin,
       colorscale = pl_colorscale,
       size = 5,
-      opacity=0.1,
+      opacity=d$opacity,
       line = list(
         width = 1
         #, color = 'rgb(0,230,230)'
       )
     )
   ) 
-test
+scatter_plot
 
 
 
