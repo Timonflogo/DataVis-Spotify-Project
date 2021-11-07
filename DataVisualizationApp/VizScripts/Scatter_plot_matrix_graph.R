@@ -29,18 +29,17 @@ d <- df %>%
            , valence
            , tempo)
 
-# percent_select <- round(nrow(time_listened) * 0.1 # replace to be reactive
-#                         ,0)
-
 d <- d %>% 
   left_join(time_listened
             , by = c('artistName' = 'artistName'
                      , 'trackName' = 'trackName')) %>% 
-  mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs = 0.9) & time_played_minutes <= quantile(time_played_minutes,probs = 1)
+  #@replace the probs with userInput #########################################################
+  mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs = 0.9) & time_played_minutes <= quantile(time_played_minutes,probs = 1) 
                       ,yes = '#FF0000',no = '#0000FF')) %>% 
   mutate(bin = factor(bin, levels = c('#FF0000', '#0000FF'))) %>% 
   mutate(opacity =  ifelse(bin == '#FF0000', 1, 0.2)) %>% 
-  filter(time_played_minutes > 5)
+  #@ replace the number of minutes with user inoput
+  filter(time_played_minutes > 5 & time_played_minutes <= 20)
 
 pl_colorscale = list(c(0.0, '#119dff'),
                      c(0.5, '#119dff'),
