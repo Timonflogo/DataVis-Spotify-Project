@@ -7,6 +7,7 @@ df <- readRDS("Data/stream_selected_c_clean.rds")
 source("ConvenienceFunctions/ConvenienceFunctions.R")
 source("VizScripts/Visualizations.R")
 source("VizScripts/Streamgraph.R")
+source("VizScripts/Summary_stats.R")
 source("Data/stream_group_data.R")
 
 categories <- unique(df$artistName)
@@ -16,6 +17,24 @@ ui <- navbarPage(
   theme = shinytheme("cerulean"),
   fluid = TRUE, 
   "Spotify streaming",
+  
+  tabPanel(title = "Welcome",
+           h1("Introduction"),
+           
+           textOutput(outputId = "introText"),
+
+           p(),
+           
+           HTML('+ Energy - The energy of a song - the higher the value, the more energtic song <br> 
+                 + Danceability - The higher the value, the easier it is to dance to this song. <br> 
+                 + Loudness (dB) - The higher the value, the louder the song. <br> 
+                 + Liveness - The higher the value, the more likely the song is a live recording. <br> 
+                 + Valence - The higher the value, the more positive mood for the song. <br> 
+                 + Length - The duration of the song.Acousticness - The higher the value the more acoustic the song is. <br> 
+                 + Speechiness - The higher the value the more spoken word the song contains. <br> 
+                 + Duration - The length of the song.')
+           
+  ),
   
   ## Tab 1 - Welcome -----
   tabPanel(title = "Welcome",
@@ -85,11 +104,23 @@ server <- function(input,output){
     paste0("You have filtered your data from ",filter_start_date," to ",filter_end_date)
   })
   
+  ## Intropage objects ----
+  
+  output$introText <- renderText({
+    paste(total_songs_played(dataInput1 = masterData())
+          ,"This corresponds with",total_unique_songs_played(dataInput1 = masterData()),"unique songs"
+          ,"across ",total_unique_artist_played(dataInput1 = masterData())," different artists."
+          ,"Your favorite artist was:",favourite_artist(dataInput1 = masterData())
+          ,"and your favorite song was",favourite_track(dataInput1 = masterData())
+          )
+  })
+  
+  
   ## Viz ----
   
   ### Streamgraph ----
   output$Streamgraph <- renderPlot({
-    streamgraph(dataInput1 = stream_group_date)
+    streamgraph2()
   }
   )
   
