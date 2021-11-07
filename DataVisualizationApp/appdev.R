@@ -10,6 +10,7 @@ source("VizScripts/Streamgraph.R")
 source("VizScripts/Summary_stats.R")
 source("Data/stream_group_data.R")
 source("VizScripts/Scatter_plot_matrix_graph.R")
+source("VizScripts/1DHeatmap.R")
 
 categories <- unique(df$artistName)
 
