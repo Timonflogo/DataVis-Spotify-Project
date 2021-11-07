@@ -28,6 +28,15 @@ source("ConvenienceFunctions/ConvenienceFunctions.R")
 
 ## Streamgraph2 ----
 streamgraph2 <- function(){
+  
+  xax <- stream_group_date_artist %>% 
+    select(date,month) %>%
+    distinct() %>% 
+    group_by(month) %>% 
+    mutate(rn = 1:n()) %>% 
+    ungroup() %>% 
+    mutate(rn2 = 1:n()) %>% 
+    filter(rn == 1)
 
   ggplot(stream_group_date_artist, aes(x = index, y = hsPlayed, fill = category,label = category)) +
     geom_stream() + #bw = wigglyness
@@ -41,9 +50,11 @@ streamgraph2 <- function(){
           ,axis.ticks = element_blank()
           ,legend.background = element_rect(fill = "#E6E6E6")
     ) +
+    scale_x_continuous(labels = xax$month #Vector of labels
+                       ,breaks = xax$rn2
+                       ) +
     labs(fill = 'Features',x = "Time",y = "Hours played")
 }
 
+#streamgraph2()
 
-
-streamgraph2()
