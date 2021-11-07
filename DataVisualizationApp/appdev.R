@@ -19,23 +19,23 @@ ui <- navbarPage(
   fluid = TRUE, 
   "Spotify streaming",
   
-  tabPanel(title = "Welcome",
-           h1("Introduction"),
-           
-           # textOutput(outputId = "introText"),
-
-           p(),
-           
-           HTML('+ Energy - The energy of a song - the higher the value, the more energtic song <br> 
-                 + Danceability - The higher the value, the easier it is to dance to this song. <br> 
-                 + Loudness (dB) - The higher the value, the louder the song. <br> 
-                 + Liveness - The higher the value, the more likely the song is a live recording. <br> 
-                 + Valence - The higher the value, the more positive mood for the song. <br> 
-                 + Length - The duration of the song.Acousticness - The higher the value the more acoustic the song is. <br> 
-                 + Speechiness - The higher the value the more spoken word the song contains. <br> 
-                 + Duration - The length of the song.')
-           
-  ),
+  # tabPanel(title = "Welcome",
+  #          h1("Introduction"),
+  #          
+  #          # textOutput(outputId = "introText"),
+  # 
+  #          p(),
+  #          
+  #          HTML('+ Energy - The energy of a song - the higher the value, the more energtic song <br> 
+  #                + Danceability - The higher the value, the easier it is to dance to this song. <br> 
+  #                + Loudness (dB) - The higher the value, the louder the song. <br> 
+  #                + Liveness - The higher the value, the more likely the song is a live recording. <br> 
+  #                + Valence - The higher the value, the more positive mood for the song. <br> 
+  #                + Length - The duration of the song.Acousticness - The higher the value the more acoustic the song is. <br> 
+  #                + Speechiness - The higher the value the more spoken word the song contains. <br> 
+  #                + Duration - The length of the song.')
+  #          
+  # ),
   
   ## Tab 1 - Welcome -----
   tabPanel(title = "Overview",
@@ -55,10 +55,21 @@ ui <- navbarPage(
              
              plotlyOutput(outputId = "Linechart"),
              
-             sliderInput(inputId = "probs_range", label = "Range of tracks", min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05),
+             plotOutput(outputId = "oneDHeatmap"),
              
-             sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks", min = 0, max = 1, value = c(0.2, 0.6), step = 0.05),
-             
+             fluidRow(
+               column(4
+                      ,sliderInput(inputId = "probs_range", label = "Range of tracks"
+                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
+                                   )
+                      ),
+               column(3
+                      ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
+                                   ,min = 0, max = 1, value = c(0.2, 0.6), step = 0.05
+                                   )
+                      )
+             ),
+
              plotlyOutput(outputId = "Scatterplot"),
              
              plotOutput(outputId = "Radarchart"),
@@ -153,6 +164,12 @@ server <- function(input,output){
   
   output$Radarchart <- renderPlot({
     radarplot(dataInput1 = masterData())
+  })
+  
+  ### 1D Heatmap ----
+  
+  output$oneDHeatmap <- renderPlot({
+    oneDHeatmap(dataInput1 = masterData())
   })
   
   

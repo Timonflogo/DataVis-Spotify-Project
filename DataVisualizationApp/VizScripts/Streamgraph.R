@@ -30,9 +30,9 @@ source("ConvenienceFunctions/ConvenienceFunctions.R")
 streamgraph2 <- function(){
   
   xax <- stream_group_date_artist %>% 
-    select(date,month) %>%
+    select(date,year,month) %>%
     distinct() %>% 
-    group_by(month) %>% 
+    group_by(year,month) %>% 
     mutate(rn = 1:n()) %>% 
     ungroup() %>% 
     mutate(rn2 = 1:n()) %>% 

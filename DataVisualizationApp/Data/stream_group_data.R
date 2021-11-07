@@ -10,7 +10,8 @@ df <- readRDS("Data/stream_selected_c_clean.rds")
 
 x <- df %>%
   select(date,month,artist_id,artistName,duration_ms) %>% 
-  group_by(date,month,artist_id,artistName) %>% 
+  mutate(year = substr(date,1,4)) %>% 
+  group_by(date,year,month,artist_id,artistName) %>% 
   dplyr::summarize(value = sum(duration_ms))
 
 topart <- x %>% 
@@ -24,7 +25,7 @@ stream_group_date_artist <- x %>%
   dplyr::rename(category = artistName.y,msPlayed = value.x,artistName = artistName.x) %>% 
   select(-value.y) %>% 
   mutate(category = replace_na(category, "Other")) %>% 
-  group_by(date,month,category) %>% 
+  group_by(date,year,month,category) %>% 
   dplyr::summarise(msPlayed = sum(msPlayed)
             ,hsPlayed = sum(msPlayed)/3600000)
 stream_group_date_artist$index <- as.integer(factor(stream_group_date_artist$date))
