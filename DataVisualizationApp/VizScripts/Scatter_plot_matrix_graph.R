@@ -3,8 +3,8 @@ scater_plot_f <- function(dataInput1
          , probs_range_end # between 0.1 and 1
          # , time_played_start # between 0 and max(d$time_played_minutes)
          # , time_played_end # between 0 and max(d$time_played_minutes)
-         # , opacity_red # between 0 and 1
-         # , opacity_blue # between 0 and 1
+         , opacity_red # between 0 and 1
+         , opacity_blue # between 0 and 1
          )
 {
   ## Libraries
@@ -44,9 +44,10 @@ scater_plot_f <- function(dataInput1
                        , 'trackName' = 'trackName')) %>% 
     #@replace the probs with userInput #########################################################
   mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs =  probs_range_start) & time_played_minutes <= quantile(time_played_minutes,probs = probs_range_end) 
-                      ,yes = '#FF0000',no = '#0000FF')) %>% 
+                      ,yes = '#FF0000' # red
+                      ,no = '#0000FF')) %>% # blue
     mutate(bin = factor(bin, levels = c('#FF0000', '#0000FF'))) %>% 
-    mutate(opacity =  ifelse(bin == '#FF0000',yes =  1, no = 0.1)) %>% 
+    mutate(opacity =  ifelse(bin == '#FF0000',yes =  opacity_red, no = opacity_blue)) %>% 
     #@ replace the number of minutes with user inoput
     filter(time_played_minutes > 5 & time_played_minutes <= 100)
   

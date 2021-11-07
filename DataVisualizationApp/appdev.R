@@ -57,6 +57,8 @@ ui <- navbarPage(
              
              sliderInput(inputId = "probs_range", label = "Range of tracks", min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05),
              
+             sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks", min = 0, max = 1, value = c(0.2, 0.6), step = 0.05),
+             
              plotlyOutput(outputId = "Scatterplot"),
              
              plotOutput(outputId = "Radarchart"),
@@ -140,7 +142,11 @@ server <- function(input,output){
   
   ### Scatter plot ----
   output$Scatterplot <- renderPlotly({
-    scater_plot_f(dataInput1 = masterData(), probs_range_start = input$probs_range[1], probs_range_end = input$probs_range[2])
+    scater_plot_f(dataInput1 = masterData()
+                  , probs_range_start = input$probs_range[1]
+                  , probs_range_end = input$probs_range[2]
+                  , opacity_red = input$opacity_range[2]
+                  , opacity_blue = input$opacity_range[1])
   })
   
   ### Radar chart ----
