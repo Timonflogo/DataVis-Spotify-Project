@@ -25,6 +25,8 @@ xlabs <- seq
 data <- totaltime %>% 
   left_join(d,by = 'time')
 
+
+
 options(scipen = 999)
 ggplot(data, aes(x = index,y = 1, fill = mPlayed)) + 
   geom_tile() +
