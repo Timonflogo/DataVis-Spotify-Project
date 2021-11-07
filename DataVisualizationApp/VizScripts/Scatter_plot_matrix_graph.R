@@ -1,10 +1,11 @@
 scater_plot_f <- function(dataInput1
          , probs_range_start # between 0.1 and 1
          , probs_range_end # between 0.1 and 1
-         , time_played_start # between 0 and max(d$time_played_minutes)
-         , time_played_end # between 0 and max(d$time_played_minutes)
-         , opacity_red # between 0 and 1
-         , opacity_blue)# between 0 and 1
+         # , time_played_start # between 0 and max(d$time_played_minutes)
+         # , time_played_end # between 0 and max(d$time_played_minutes)
+         # , opacity_red # between 0 and 1
+         # , opacity_blue # between 0 and 1
+         )
 {
   ## Libraries
   pacman::p_load("dplyr"
@@ -42,12 +43,12 @@ scater_plot_f <- function(dataInput1
               , by = c('artistName' = 'artistName'
                        , 'trackName' = 'trackName')) %>% 
     #@replace the probs with userInput #########################################################
-  mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs = probs_range_start) & time_played_minutes <= quantile(time_played_minutes,probs = probs_range_end) 
+  mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs =  probs_range_start) & time_played_minutes <= quantile(time_played_minutes,probs = probs_range_end) 
                       ,yes = '#FF0000',no = '#0000FF')) %>% 
     mutate(bin = factor(bin, levels = c('#FF0000', '#0000FF'))) %>% 
-    mutate(opacity =  ifelse(bin == '#FF0000', opacity_red, opacity_blue)) %>% 
+    mutate(opacity =  ifelse(bin == '#FF0000',yes =  1, no = 0.1)) %>% 
     #@ replace the number of minutes with user inoput
-    filter(time_played_minutes > time_played_start & time_played_minutes <= time_played_end)
+    filter(time_played_minutes > 5 & time_played_minutes <= 100)
   
   pl_colorscale = list(c(0.0, '#119dff'),
                        c(0.5, '#119dff'),
@@ -64,6 +65,8 @@ scater_plot_f <- function(dataInput1
     plot_ly()
   
   scatter_plot <- scatter_plot %>%
+    layout(plot_bgcolor='#E6E6E6') %>% 
+    layout(paper_bgcolor='#E6E6E6') %>% 
     add_trace(
       type = 'splom',
       dimensions = list(
@@ -94,13 +97,13 @@ scater_plot_f <- function(dataInput1
   scatter_plot
   
 }
-scater_plot_f(dataInput1 = readRDS("Data/stream_selected_c_clean.rds") 
-              , probs_range_start = 0.2
-              , probs_range_end = 0.6
-              , time_played_start = 5
-              , time_played_end = 100
-              , opacity_red = 1
-              , opacity_blue = 0.1)
+# scater_plot_f(dataInput1 = readRDS("Data/stream_selected_c_clean.rds") 
+#               , probs_range_start = 0.2
+#               , probs_range_end = 0.6
+#               , time_played_start = 5
+#               , time_played_end = 100
+#               , opacity_red = 1
+#               , opacity_blue = 0.1)
 
 
 

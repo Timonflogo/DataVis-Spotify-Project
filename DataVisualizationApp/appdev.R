@@ -9,6 +9,7 @@ source("VizScripts/Visualizations.R")
 source("VizScripts/Streamgraph.R")
 source("VizScripts/Summary_stats.R")
 source("Data/stream_group_data.R")
+source("VizScripts/Scatter_plot_matrix_graph.R")
 
 categories <- unique(df$artistName)
 
@@ -53,6 +54,10 @@ ui <- navbarPage(
              ),
              
              plotlyOutput(outputId = "Linechart"),
+             
+             sliderInput(inputId = "probs_range", label = "Range of tracks", min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05),
+             
+             plotlyOutput(outputId = "Scatterplot"),
              
              plotOutput(outputId = "Radarchart"),
              
@@ -131,6 +136,11 @@ server <- function(input,output){
   
   output$Linechart <- renderPlotly({
     linechart(dataInput1 = masterData())
+  })
+  
+  ### Scatter plot ----
+  output$Scatterplot <- renderPlotly({
+    scater_plot_f(dataInput1 = masterData(), probs_range_start = input$probs_range[1], probs_range_end = input$probs_range[2])
   })
   
   ### Radar chart ----
