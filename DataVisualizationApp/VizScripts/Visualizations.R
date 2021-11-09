@@ -76,7 +76,7 @@ getSeason <- function(DATES) {
 
 radarplot <- function(dataInput1){
   
-  radar_gg <- df %>%
+  radar_gg <- dataInput1 %>%
     mutate(season = as.factor(getSeason(date))) %>%
     select(1, 2:6, 42, 7:41) %>% 
     melt(1:14) %>%  # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% dont use this, its not working
