@@ -76,17 +76,15 @@ getSeason <- function(DATES) {
 
 radarplot <- function(dataInput1){
   
-  radar_gg <- dataInput1 %>%
+  radar_gg <- df %>%
     mutate(season = as.factor(getSeason(date))) %>%
     select(1, 2:6, 42, 7:41) %>% 
     melt(1:14) %>%  # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% dont use this, its not working
     group_by(season, variable) %>%
     summarise(value = mean(value)) %>% 
     spread(variable, value) %>% 
-    select(20:28) %>% 
+    select(21:28) %>% 
     mutate(season = as.character(season))
-  
-    # radar_gg <- rename(sub(colnames(radar_gg), pattern = "_exposed", replacement = ""))
   
   radar_gg <- radar_gg %>% 
     remove_rownames %>% 
