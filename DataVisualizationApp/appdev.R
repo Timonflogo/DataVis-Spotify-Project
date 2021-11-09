@@ -12,7 +12,9 @@ source("Data/stream_group_data.R")
 source("VizScripts/Scatter_plot_matrix_graph.R")
 source("VizScripts/1DHeatmap.R")
 
+#Objects for plotly observable events for drilldown
 categories <- unique(df$artistName)
+weekdays <- c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
 
 # UI ----
 ui <- navbarPage(
@@ -54,9 +56,23 @@ ui <- navbarPage(
                         )
              ),
              
-             plotlyOutput(outputId = "Linechart"),
+             fluidRow(
+               column(
+                plotlyOutput(outputId = "Linechart",width = '100%')
+                ,width = 8
+               ),
+               column(
+                 plotOutput(outputId = "Radarchart",width = '100%')
+                 ,width = 4
+               )
+             ),
              
-             plotOutput(outputId = "oneDHeatmap"),
+             fluidRow(
+               column(
+                 plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100)
+                 ,width = 8
+               )
+             ),
              
              fluidRow(
                column(4
@@ -71,9 +87,7 @@ ui <- navbarPage(
                       )
              ),
 
-             plotlyOutput(outputId = "Scatterplot"),
-             
-             plotOutput(outputId = "Radarchart"),
+             plotlyOutput(outputId = "Scatterplot",height = "200%"),
              
              textOutput(outputId = "FilterText"),
              
@@ -167,19 +181,36 @@ server <- function(input,output){
     radarplot(dataInput1 = masterData())
   })
   
-  ### 1D Heatmap ----
+  ### Drill down on line chart ----
   
-  output$oneDHeatmap <- renderPlot({
-    oneDHeatmap(dataInput1 = masterData())
+  selected_weekday <- reactiveVal() #This function is a container of the selected artist
+  output$s_weekday <- renderText({
+    selected_weekday()
   })
   
+  observe({
+    pc <- event_data("plotly_click")$x #x = the label, pc = plotly click
+    if (isTRUE(pc %in% weekdays)) selected_weekday(pc)
+  })
   
-  ### Drill down bar chart ----
+  ### Drill down heatmap ----
   
   current_artist <- reactiveVal() #This function is a container of the selected artist
   
   output$c_artist <- renderText({
     current_artist()
+  })
+  
+  #### Data for the heatmap ----
+  
+  heatmap_data <- reactive({
+    df_heatmap(dataInput1 = masterData(),selected_weekday = selected_weekday())
+  })
+  
+  ### 1D Heatmap ----
+  
+  output$oneDHeatmap <- renderPlot({
+    oneDHeatmap(heatmap_data = heatmap_data())
   })
   
   #### Data for the bar chart ----
@@ -204,8 +235,14 @@ server <- function(input,output){
       actionButton("clear", "Back", icon("chevron-left"))
   })
   
+  output$back2 <- renderUI({
+    if (length(selected_weekday())) 
+      actionButton(inputId = "clearHeatmap",label = "Back",icon = icon("chevron-left"))
+  })
+  
   # clear the chosen category on back button press
   observeEvent(input$clear, current_artist(NULL))
+  observeEvent(input$clearHeatmap, current_artist(NULL))
   
   
   
@@ -214,7 +251,7 @@ server <- function(input,output){
   ## Test ----
   
   output$BrushedData <- renderDataTable({
-    barchart_data()
+    heatmap_data()
   })
   
 }
