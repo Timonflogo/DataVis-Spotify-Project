@@ -96,7 +96,7 @@ df_barchart <- function(dataInput1,current_artist = current_artist()
                         ,NumArtists = 10,NumTracks = 10){
   
   #Checks if there is selected an artist. If not then:
-  if (!length(current_artist)) {
+  if (length(current_artist) != 1) {
     return(
       df_barchart <- dataInput1 %>% 
         group_by(artist_id,artistName) %>% 

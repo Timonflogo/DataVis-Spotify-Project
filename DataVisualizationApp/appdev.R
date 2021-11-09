@@ -71,6 +71,11 @@ ui <- navbarPage(
                column(
                  plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100)
                  ,width = 8
+               ),
+               
+               column(
+                 uiOutput("back2")
+                 ,width = 1
                )
              ),
              
@@ -123,14 +128,13 @@ server <- function(input,output){
     filter_start_date <<- sort(data$date,decreasing = FALSE)[1] # <<- to assign to global env.
     filter_end_date <<- sort(data$date,decreasing = TRUE)[1] # <<- to assign to global env.
     
-    #Return the data
-    if (!length(current_artist())) {
-      return(
-        df[date >= filter_start_date & date <= filter_end_date,]
-      )
-    }
-    
-    df[date >= filter_start_date & date <= filter_end_date & artistName == current_artist(),]
+    df %>% 
+      filter(
+        date >= filter_start_date
+        ,date <= filter_end_date
+        ,artistName %in% current_artist() #in operator, as all artist are set by default
+        ,weekday %in% selected_weekday() #in operator, as all weekdays are set by default
+        )
     
   })
   
@@ -183,8 +187,8 @@ server <- function(input,output){
   
   ### Drill down on line chart ----
   
-  selected_weekday <- reactiveVal() #This function is a container of the selected artist
-  output$s_weekday <- renderText({
+  selected_weekday <- reactiveVal(value = weekdays) #This function is a container of the selected artist
+  output$s_weekday <- renderText({ #text to render selected value
     selected_weekday()
   })
   
@@ -195,7 +199,7 @@ server <- function(input,output){
   
   ### Drill down heatmap ----
   
-  current_artist <- reactiveVal() #This function is a container of the selected artist
+  current_artist <- reactiveVal(value = categories) #This function is a container of the selected artist
   
   output$c_artist <- renderText({
     current_artist()
@@ -241,8 +245,8 @@ server <- function(input,output){
   })
   
   # clear the chosen category on back button press
-  observeEvent(input$clear, current_artist(NULL))
-  observeEvent(input$clearHeatmap, current_artist(NULL))
+  observeEvent(eventExpr = input$clear,handlerExpr = current_artist(categories))
+  observeEvent(eventExpr = input$clearHeatmap,handlerExpr = selected_weekday(weekdays))
   
   
   
@@ -251,7 +255,7 @@ server <- function(input,output){
   ## Test ----
   
   output$BrushedData <- renderDataTable({
-    heatmap_data()
+    masterData()
   })
   
 }
