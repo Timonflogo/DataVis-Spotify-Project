@@ -76,7 +76,7 @@ getSeason <- function(DATES) {
 
 radarplot <- function(dataInput1){
   
-  radar_gg <- dataInput1 %>%
+  radar_gg <- df %>%
     mutate(season = as.factor(getSeason(date))) %>%
     select(1, 2:6, 42, 7:41) %>% 
     melt(1:14) %>%  # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% dont use this, its not working
@@ -99,7 +99,7 @@ radarplot <- function(dataInput1){
   colors_in=c( rgb(0.2,0.5,0.3,0.1), rgb(0.3,0.6,0.1,0.1), rgb(0.7,0.5,0.3,0.1), rgb(0.8,0.2,0.5,0.1) )
   
   # plot with default options:
-  par(bg = '#E6E6E6')
+  par(bg = '#E6E6E6', mar = c(1,1,0.1, 0.1) )
   radarchart( radar_gg, axistype=1,vlabels = cap_space_radar(colnames(radar_gg)),
               #custom polygon
               pcol=colors_border , pfcol=colors_in , plwd=2 , plty=1,
@@ -111,7 +111,7 @@ radarplot <- function(dataInput1){
               
   )
   
-  legend(x=.9, y=1.3, legend = rownames(radar_gg[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
+  legend(x=.85, y=1.3, legend = rownames(radar_gg[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
 }
 
 ## Barchart ----
