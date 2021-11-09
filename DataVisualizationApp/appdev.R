@@ -16,11 +16,16 @@ source("VizScripts/1DHeatmap.R")
 categories <- unique(df$artistName)
 weekdays <- c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday")
 
+setBackgroundColor(
+  color = "ghostwhite",
+)
+
 # UI ----
 ui <- navbarPage(
   theme = shinytheme("cerulean"),
   fluid = TRUE, 
   "Spotify streaming",
+  setBackgroundColor("#E6E6E6"),
   
   # tabPanel(title = "Welcome",
   #          h1("Introduction"),
@@ -56,6 +61,8 @@ ui <- navbarPage(
                         )
              ),
              
+             plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100),
+             
              fluidRow(
                column(
                 plotlyOutput(outputId = "Linechart",width = '100%')
@@ -69,17 +76,10 @@ ui <- navbarPage(
              
              fluidRow(
                column(
-                 plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100)
-                 ,width = 8
-               ),
-               
-               column(
                  uiOutput("back2")
                  ,width = 1
-               )
-             ),
-             
-             fluidRow(
+               ),
+               
                column(4
                       ,sliderInput(inputId = "probs_range", label = "Range of tracks"
                                    ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
