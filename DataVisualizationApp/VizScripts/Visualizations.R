@@ -95,21 +95,23 @@ radarplot <- function(dataInput1){
   
   radar_gg <- rbind(rep(1,ncol(radar_gg)) , rep(0,ncol(radar_gg)) , radar_gg)
   
-  colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) , rgb(0.7,0.5,0.1,0.9) )
-  colors_in=c( rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4) , rgb(0.7,0.5,0.1,0.4) )
+  colors_border=c( rgb(0.2,0.5,0.5,0.9), rgb(0.3,0.6,0.1,0.9) , rgb(0.7,0.5,0.1,0.9), rgb(0.8,0.2,0.5,0.9) )
+  colors_in=c( rgb(0.2,0.5,0.3,0.1), rgb(0.3,0.6,0.1,0.1), rgb(0.7,0.5,0.3,0.1), rgb(0.8,0.2,0.5,0.1) )
   
   # plot with default options:
   par(bg = '#E6E6E6')
   radarchart( radar_gg, axistype=1,vlabels = cap_space_radar(colnames(radar_gg)),
               #custom polygon
-              pcol=colors_border , pfcol=colors_in , plwd=4 , plty=1,
+              pcol=colors_border , pfcol=colors_in , plwd=2 , plty=1,
               #custom the grid
               cglcol = "grey", cglty=1, axislabcol= "grey",caxislabels=seq(0,1,0.25), cglwd=0.8, #
               #custom labels
-              vlcex=0.8
+              vlcex=0.8,
+              # change opacity
+              
   )
   
-  legend(x=.9, y=1.3, legend = rownames(radar_gg[-c(1,2),]), bty = "n", pch=20 , col=colors_in , text.col = "grey", cex=1.2, pt.cex=3)
+  legend(x=.9, y=1.3, legend = rownames(radar_gg[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
 }
 
 ## Barchart ----
@@ -164,7 +166,7 @@ barchart <- function(dataInput1,current_artist = current_artist()){
     layout(paper_bgcolor='#E6E6E6')
 }
 
-### Horizanchart ----
+### Horizonchart ----
 
 horizonchart <- function(dataInput1, NumArtists) {
   
