@@ -67,7 +67,8 @@ radarplot <- function(dataInput1){
     melt(1:13) %>%  # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% dont use this, its not working
     group_by(variable) %>%
     summarise(value = mean(value)) %>% 
-    spread(variable, value)
+    spread(variable, value) %>% 
+    select(20:28)
   
   rownames(radar_gg) <- "exposure"
   radar_gg <- rbind(rep(1,ncol(radar_gg)) , rep(0,ncol(radar_gg)) , radar_gg)
