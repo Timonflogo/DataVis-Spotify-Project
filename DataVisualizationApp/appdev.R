@@ -11,6 +11,8 @@ source("VizScripts/Summary_stats.R")
 source("Data/stream_group_data.R")
 source("VizScripts/Scatter_plot_matrix_graph.R")
 source("VizScripts/1DHeatmap.R")
+source("VizScripts/mod_linechart.R")
+source("VizScripts/mod_radarchart.R")
 
 #Objects for plotly observable events for drilldown
 categories <- unique(df$artistName)
