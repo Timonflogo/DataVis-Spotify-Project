@@ -3,7 +3,7 @@ scater_plot_f <- function(dataInput1
          , probs_range_end # between 0.1 and 1
          # , time_played_start # between 0 and max(d$time_played_minutes)
          # , time_played_end # between 0 and max(d$time_played_minutes)
-         , opacity_red # between 0 and 1
+         # , opacity_red # between 0 and 1
          , opacity_blue # between 0 and 1
          )
 {
@@ -22,8 +22,6 @@ scater_plot_f <- function(dataInput1
     ungroup() %>% 
     mutate(time_played_minutes = round(time_played_minutes,2)) 
   
-  
-  
   d <- dataInput1 %>% 
     distinct(artistName
              , trackName
@@ -38,63 +36,118 @@ scater_plot_f <- function(dataInput1
              , valence
              , tempo)
   
-  d <- d %>% 
-    left_join(time_listened
-              , by = c('artistName' = 'artistName'
-                       , 'trackName' = 'trackName')) %>% 
+  df <- d %>%
+    left_join(time_listened,
+              by = c('artistName' = 'artistName'
+                     , 'trackName' = 'trackName')) %>%
     #@replace the probs with userInput #########################################################
-  mutate(bin = ifelse(time_played_minutes > quantile(time_played_minutes,probs =  probs_range_start) & time_played_minutes <= quantile(time_played_minutes,probs = probs_range_end) 
-                      ,yes = '#FF0000' # red
-                      ,no = '#0000FF')) %>% # blue
-    mutate(bin = factor(bin, levels = c('#FF0000', '#0000FF'))) %>% 
-    mutate(opacity =  ifelse(bin == '#FF0000',yes =  opacity_red, no = opacity_blue)) %>% 
+  mutate(
+    bin = ifelse(
+      time_played_minutes > quantile(time_played_minutes
+                                     , probs =  probs_range_start) &
+        time_played_minutes <= quantile(time_played_minutes
+                                        , probs = probs_range_end),
+      yes = 'rgba(255, 0, 0, 0.5)', # red
+      no = 'rgba(135, 206, 250, 0.5)'
+    )
+  ) %>% # blue
+    mutate(bin = factor(bin, levels = c(
+      'rgba(255, 0, 0, 0.5)', 'rgba(135, 206, 250, 0.5)'
+    ))) %>%
+    mutate(opacity =  ifelse(bin == 'rgba(255, 0, 0, 0.5)'
+                             , yes =  0.7 #opacity_red
+                             , no = opacity_blue)) %>%
+    mutate(description = ifelse(test = bin == 'rgba(255, 0, 0, 0.5)'
+                                , yes = 'Tracks in the selected range'
+                                , no = 'Other tracks')) %>% 
+    mutate(description = factor(description
+                                , levels = c('Tracks in the selected range'
+                                             , 'Other tracks'))) %>% 
     #@ replace the number of minutes with user inoput
-    filter(time_played_minutes > 5 & time_played_minutes <= 100)
+    filter(time_played_minutes > 5 & time_played_minutes <= 200)
   
-  pl_colorscale = list(c(0.0, '#119dff'),
-                       c(0.5, '#119dff'),
-                       c(0.5, '#ef553b'),
-                       c(1, '#ef553b'))
+  axis = list(
+    showline = FALSE,
+    zeroline = FALSE,
+    gridcolor = '#ffff',
+    ticklen = 4,
+    titlefont = list(size = 13)
+  )
   
-  axis = list(showline=FALSE,
-              zeroline=FALSE,
-              gridcolor='#ffff',
-              ticklen=4,
-              titlefont=list(size=13))
   
-  scatter_plot <- d %>%
-    plot_ly()
-  
-  scatter_plot <- scatter_plot %>%
-    layout(plot_bgcolor='#E6E6E6') %>% 
-    layout(paper_bgcolor='#E6E6E6') %>% 
-    add_trace(
+  fig <- plot_ly()
+  for (i in unique(df$bin)) {
+    fig <- add_trace(
+      fig,
+      data = df[df$bin == i,],
       type = 'splom',
       dimensions = list(
-        list(label='danceability', values = ~ danceability)
-        , list(label='energy', values = ~ energy)
-        , list(label='loudness', values = ~ loudness)
-        , list(label='speechiness', values = ~ speechiness)
-        , list(label='acousticness', values = ~ acousticness)
-        , list(label='instrumentalness', values = ~ instrumentalness)
-        , list(label='liveness', values = ~ liveness)
-        , list(label='valence', values = ~ valence)
-        , list(label = 'tempo' , values = ~ tempo)
+        list(label = 'danceability', values = ~ danceability),
+        list(label = 'energy', values = ~ energy),
+        list(label = 'loudness', values = ~ loudness),
+        list(label = 'speechiness', values = ~ speechiness),
+        list(label = 'acousticness', values = ~ acousticness),
+        list(label = 'instrumentalness', values = ~ instrumentalness),
+        list(label = 'liveness', values = ~ liveness),
+        list(label = 'valence', values = ~ valence),
+        list(label = 'tempo' , values = ~ tempo)
       ),
-      text = ~ factor(trackName, labels = unique(trackName)),
-      diagonal=list(visible=F),
+      name = levels(df$description)[levels(df$bin) == i],
+      text =  ~ factor(trackName, labels = unique(trackName)),
+      diagonal = list(visible = F),
+      showupperhalf = F,
       marker = list(
         color = ~ bin,
         group = ~ bin,
+        opacity = ~ opacity, 
         colorscale = pl_colorscale,
         size = 5,
-        opacity=d$opacity,
-        line = list(
-          width = 1
-          #, color = 'rgb(0,230,230)'
-        )
+        line = list(width = 1,
+                    color = 'rgb(230,230,230)')
       )
-    ) 
+    )
+  }
+  
+  scatter_plot <- fig %>%
+    layout(
+      title = "Scatterplot Matrix",
+      hovermode = 'closest',
+      dragmode = 'select',
+      showlegend = T, 
+      plot_bgcolor = 'rgba(240,240,240, 0.95)',
+      xaxis = list(
+        domain = NULL,
+        showline = F,
+        zeroline = F,
+        gridcolor = '#ffff',
+        ticklen = 4,
+        titlefont = list(size = 13)
+      ),
+      yaxis1 = list(
+        domain = NULL,
+        showline = F,
+        zeroline = F,
+        gridcolor = '#ffff',
+        ticklen = 4,
+        titlefont = list(size = 13)
+      ),
+      xaxis2 = axis,
+      xaxis3 = axis,
+      xaxis4 = axis,
+      xaxis5 = axis,
+      xaxis6 = axis,
+      xaxis7 = axis,
+      xaxis8 = axis,
+      yaxis2 = axis,
+      yaxis3 = axis,
+      yaxis4 = axis,
+      yaxis5 = axis,
+      yaxis6 = axis,
+      yaxis7 = axis,
+      yaxis8 = axis,
+      yaxis9 = axis
+    )
+  
   scatter_plot
   
 }
