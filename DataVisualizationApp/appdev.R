@@ -121,12 +121,12 @@ ui <- navbarPage(
                       ),
                column(3
                       ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
-                                   ,min = 0, max = 1, value = c(0.2, 0.6), step = 0.05
+                                   ,min = 0, max = 1, value = 0.2, step = 0.05
                                    )
                       )
              ),
 
-             plotlyOutput(outputId = "Scatterplot",height = "200%"),
+             plotlyOutput(outputId = "Scatterplot",height = "2000"),
              
              textOutput(outputId = "FilterText"),
              
@@ -209,7 +209,7 @@ server <- function(input,output){
     scater_plot_f(dataInput1 = masterData()
                   , probs_range_start = input$probs_range[1]
                   , probs_range_end = input$probs_range[2]
-                  , opacity_red = input$opacity_range[2]
+                  #, opacity_red = input$opacity_range[2]
                   , opacity_blue = input$opacity_range[1])
   })
   
