@@ -112,22 +112,9 @@ ui <- navbarPage(
                column(
                  uiOutput("back2")
                  ,width = 1
-               ),
-               
-               column(4
-                      ,sliderInput(inputId = "probs_range", label = "Range of tracks"
-                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
-                                   )
-                      ),
-               column(3
-                      ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
-                                   ,min = 0, max = 1, value = 0.2, step = 0.05
-                                   )
-                      )
+               )
              ),
-
-             plotlyOutput(outputId = "Scatterplot",height = "2000"),
-             
+            
              textOutput(outputId = "FilterText"),
              
              numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50),
@@ -137,9 +124,24 @@ ui <- navbarPage(
              
              uiOutput("back"),
              
-             textOutput(outputId = "c_artist"),
+             fluidRow(
+               column(4
+                      ,sliderInput(inputId = "probs_range", label = "Range of tracks"
+                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
+                      )
+               ),
+               column(3
+                      ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
+                                   ,min = 0, max = 1, value = 0.2, step = 0.05
+                      )
+               ),
+
+             plotlyOutput(outputId = "Scatterplot",height = "2000")
+             ),
              
-             dataTableOutput(outputId = "BrushedData"),
+             # textOutput(outputId = "c_artist"),
+             
+             # dataTableOutput(outputId = "BrushedData"),
              
              width = 11
            )
