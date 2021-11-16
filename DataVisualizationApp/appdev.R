@@ -113,8 +113,12 @@ ui <- navbarPage(
              
              textOutput(outputId = "FilterText"),
              
-             numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50),
-             numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50),
+             fluidRow(
+             column(3
+                    , numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50)),
+             column(3
+                    , numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50))
+             ),
              
              plotlyOutput("bar"),
              

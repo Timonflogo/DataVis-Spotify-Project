@@ -79,6 +79,12 @@ scater_plot_f <- function(dataInput1
                        c(1, '#ef553b'))
   
   fig <- plot_ly()
+  
+  fig <- fig %>% 
+    layout(plot_bgcolor  = "rgba(0, 0, 0, 0)",
+           paper_bgcolor = "rgba(0, 0, 0, 0)",
+           fig_bgcolor   = "rgba(0, 0, 0, 0)")
+  
   for (i in unique(df_scatter$bin)) {
     fig <- add_trace(
       fig,
