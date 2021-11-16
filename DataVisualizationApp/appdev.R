@@ -112,7 +112,6 @@ ui <- navbarPage(
                column(
                  uiOutput("back2")
                  ,width = 1
-<<<<<<< HEAD
                ),
                
                column(4
@@ -127,9 +126,7 @@ ui <- navbarPage(
                       )
                # , column(3
                #        , sliderInput(inoutId = ''))
-=======
                )
->>>>>>> 5325c268df8c61326b5aca3ff401dc935f79c1f3
              ),
             
              textOutput(outputId = "FilterText"),
