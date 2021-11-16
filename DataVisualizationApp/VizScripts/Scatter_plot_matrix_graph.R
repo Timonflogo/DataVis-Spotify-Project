@@ -3,7 +3,7 @@ scater_plot_f <- function(dataInput1
          , probs_range_end # between 0.1 and 1
          # , time_played_start # between 0 and max(d$time_played_minutes)
          # , time_played_end # between 0 and max(d$time_played_minutes)
-         # , opacity_red # between 0 and 1
+         , opacity_red # between 0 and 1
          , opacity_blue # between 0 and 1
          )
 {
@@ -55,7 +55,7 @@ scater_plot_f <- function(dataInput1
       'rgba(255, 0, 0, 0.5)', 'rgba(135, 206, 250, 0.5)'
     ))) %>%
     mutate(opacity =  ifelse(bin == 'rgba(255, 0, 0, 0.5)'
-                             , yes =  0.7 #opacity_red
+                             , yes =  opacity_red #opacity_red
                              , no = opacity_blue)) %>%
     mutate(description = ifelse(test = bin == 'rgba(255, 0, 0, 0.5)'
                                 , yes = 'Tracks in the selected range'

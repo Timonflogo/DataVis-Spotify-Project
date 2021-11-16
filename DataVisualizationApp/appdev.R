@@ -122,15 +122,22 @@ ui <- navbarPage(
              
              fluidRow(
                column(4
-                      ,sliderInput(inputId = "probs_range", label = "Range of tracks"
+                      ,sliderInput(inputId = "probs_range", label = "Highlight of tracks in range"
                                    ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
                       )
                ),
                column(3
-                      ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
+                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the range"
                                    ,min = 0, max = 1, value = 0.2, step = 0.05
                       )
-               )
+               ),
+               column(3
+                      , sliderInput(inputId = "opacity_red"
+                                    , label = 'Visibility fo tracks inside the range'
+                                    , min = 0 
+                                    , max = 1
+                                    , value = 0.8
+                                    , step = 0.05))
              ),
              
              plotlyOutput(outputId = "Scatterplot",height = "800"),
@@ -207,8 +214,8 @@ server <- function(input,output){
     scater_plot_f(dataInput1 = masterData()
                   , probs_range_start = input$probs_range[1]
                   , probs_range_end = input$probs_range[2]
-                  #, opacity_red = input$opacity_range[2]
-                  , opacity_blue = input$opacity_range[1])
+                  , opacity_red = input$opacity_red
+                  , opacity_blue = input$opacity_blue)
   })
   
   ### Radar chart ----
