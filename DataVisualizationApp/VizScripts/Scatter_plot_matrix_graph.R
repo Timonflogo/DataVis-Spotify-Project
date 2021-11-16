@@ -74,6 +74,10 @@ scater_plot_f <- function(dataInput1
     titlefont = list(size = 13)
   )
   
+  pl_colorscale = list(c(0.0, '#119dff'),
+                       c(0.5, '#119dff'),
+                       c(0.5, '#ef553b'),
+                       c(1, '#ef553b'))
   
   fig <- plot_ly()
   for (i in unique(df$bin)) {
