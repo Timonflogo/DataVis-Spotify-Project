@@ -121,23 +121,40 @@ ui <- navbarPage(
              uiOutput("back"),
              
              fluidRow(
-               column(4
-                      ,sliderInput(inputId = "probs_range", label = "Highlight of tracks in range"
+               column(3
+                      ,sliderInput(inputId = "probs_range", label = "Highlight tracks in percentiles of minutes played (e.g. 0.9 - 1.0 = Top 10%)"
                                    ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
                       )
                ),
-               column(3
-                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the range"
+               column(2
+                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the specified percentile range"
                                    ,min = 0, max = 1, value = 0.2, step = 0.05
                       )
                ),
-               column(3
+               column(2
                       , sliderInput(inputId = "opacity_red"
-                                    , label = 'Visibility fo tracks inside the range'
+                                    , label = 'Visibility of tracks inside the specified percentile range'
                                     , min = 0 
                                     , max = 1
                                     , value = 0.8
-                                    , step = 0.05))
+                                    , step = 0.05)
+               ),
+               column(2
+                      , numericInput(inputId = "time_played_start"
+                                     , label = "Minimum total minutes played per track"
+                                     , min = 0
+                                     , max = 10000
+                                     , value = 1)
+                  
+               )
+               , column(2
+                      , numericInput(inputId = "time_played_end"
+                                     , label = "Maximum total minutes played per track"
+                                     , min = 1
+                                     , max = 10000
+                                     , value = 10)
+
+               )
              ),
              
              plotlyOutput(outputId = "Scatterplot",height = "800"),
@@ -215,7 +232,10 @@ server <- function(input,output){
                   , probs_range_start = input$probs_range[1]
                   , probs_range_end = input$probs_range[2]
                   , opacity_red = input$opacity_red
-                  , opacity_blue = input$opacity_blue)
+                  , opacity_blue = input$opacity_blue
+                  , time_played_start = input$time_played_start
+                  , time_played_end = input$time_played_end
+                  )
   })
   
   ### Radar chart ----

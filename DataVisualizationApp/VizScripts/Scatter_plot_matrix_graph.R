@@ -1,8 +1,8 @@
 scater_plot_f <- function(dataInput1
          , probs_range_start # between 0.1 and 1
          , probs_range_end # between 0.1 and 1
-         # , time_played_start # between 0 and max(d$time_played_minutes)
-         # , time_played_end # between 0 and max(d$time_played_minutes)
+         , time_played_start # between 0 and max(d$time_played_minutes)
+         , time_played_end # between 0 and max(d$time_played_minutes)
          , opacity_red # between 0 and 1
          , opacity_blue # between 0 and 1
          )
@@ -36,7 +36,7 @@ scater_plot_f <- function(dataInput1
              , valence
              , tempo)
   
-  df <- d %>%
+  df_scatter <- d %>%
     left_join(time_listened,
               by = c('artistName' = 'artistName'
                      , 'trackName' = 'trackName')) %>%
@@ -63,8 +63,7 @@ scater_plot_f <- function(dataInput1
     mutate(description = factor(description
                                 , levels = c('Tracks in the selected range'
                                              , 'Other tracks'))) %>% 
-    #@ replace the number of minutes with user inoput
-    filter(time_played_minutes > 5 & time_played_minutes <= 200)
+    filter(time_played_minutes > time_played_start & time_played_minutes <= 200)
   
   axis = list(
     showline = FALSE,
@@ -80,10 +79,10 @@ scater_plot_f <- function(dataInput1
                        c(1, '#ef553b'))
   
   fig <- plot_ly()
-  for (i in unique(df$bin)) {
+  for (i in unique(df_scatter$bin)) {
     fig <- add_trace(
       fig,
-      data = df[df$bin == i,],
+      data = df_scatter[df_scatter$bin == i,],
       type = 'splom',
       dimensions = list(
         list(label = 'danceability', values = ~ danceability),
@@ -96,7 +95,7 @@ scater_plot_f <- function(dataInput1
         list(label = 'valence', values = ~ valence),
         list(label = 'tempo' , values = ~ tempo)
       ),
-      name = levels(df$description)[levels(df$bin) == i],
+      name = levels(df_scatter$description)[levels(df_scatter$bin) == i],
       text =  ~ factor(trackName, labels = unique(trackName)),
       diagonal = list(visible = F),
       showupperhalf = F,
