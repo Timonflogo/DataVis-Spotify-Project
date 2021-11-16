@@ -126,7 +126,7 @@ ui <- navbarPage(
                       )
              ),
 
-             plotlyOutput(outputId = "Scatterplot",height = "2000"),
+             plotlyOutput(outputId = "Scatterplot",height = "800"),
              
              textOutput(outputId = "FilterText"),
              
