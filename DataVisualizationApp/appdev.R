@@ -112,9 +112,22 @@ ui <- navbarPage(
                column(
                  uiOutput("back2")
                  ,width = 1
-               )
+               ),
+               
+               column(4
+                      ,sliderInput(inputId = "probs_range", label = "Range of tracks"
+                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
+                                   )
+                      ),
+               column(3
+                      ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
+                                   ,min = 0, max = 1, value = 0.2, step = 0.05
+                                   )
+                      )
              ),
-            
+
+             plotlyOutput(outputId = "Scatterplot",height = "800"),
+             
              textOutput(outputId = "FilterText"),
              
              numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50),
@@ -124,32 +137,14 @@ ui <- navbarPage(
              
              uiOutput("back"),
              
-             fluidRow(
-               column(4
-                      ,sliderInput(inputId = "probs_range", label = "Highlit a range of tracks"
-                                    ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
-                       )
-               ),
-               column(3
-                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the range"
-                                   ,min = 0, max = 1, value = 0.2, step = 0.05
-                      )
-               )
-               # , column(3
-               #        , sliderInput(inoutId = ''))
-             ),
-
-             plotlyOutput(outputId = "Scatterplot",height = "2000")
-             ),
+             textOutput(outputId = "c_artist"),
              
-             # textOutput(outputId = "c_artist"),
-             
-             # dataTableOutput(outputId = "BrushedData"),
+             dataTableOutput(outputId = "BrushedData"),
              
              width = 11
            )
+  )
 )
-
 
 # Server ----
 server <- function(input,output){
@@ -215,7 +210,7 @@ server <- function(input,output){
                   , probs_range_start = input$probs_range[1]
                   , probs_range_end = input$probs_range[2]
                   #, opacity_red = input$opacity_range[2]
-                  , opacity_blue = input$opacity_blue)
+                  , opacity_blue = input$opacity_range[1])
   })
   
   ### Radar chart ----
