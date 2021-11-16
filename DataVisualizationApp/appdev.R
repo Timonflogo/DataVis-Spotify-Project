@@ -67,6 +67,38 @@ ui <- navbarPage(
              
              fluidRow(
                column(
+                 actionButton("monday", "Monday")
+                 ,width = 1
+               ),
+               column(
+                 actionButton("tuesday", "Tuesday")
+                 ,width = 1
+               ),
+               column(
+                 actionButton("wednesday", "Wednesday")
+                 ,width = 1
+               ),
+               column(
+                 actionButton("thursday", "Thursday")
+                 ,width = 1
+               ),
+               column(
+                 actionButton("friday", "Friday")
+                 ,width = 1
+               ),
+               column(
+                 actionButton("saturday", "Saturday")
+                 ,width = 1
+               ),
+               column(
+                 actionButton("sunday", "Sunday")
+                 ,width = 1
+               )
+               
+             ),
+             
+             fluidRow(
+               column(
                 plotlyOutput(outputId = "Linechart",width = '100%')
                 ,width = 8
                ),
