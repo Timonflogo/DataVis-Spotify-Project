@@ -112,20 +112,6 @@ ui <- navbarPage(
                column(
                  uiOutput("back2")
                  ,width = 1
-               ),
-               
-               column(4
-                      ,sliderInput(inputId = "probs_range", label = "Highlit a range of tracks"
-                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
-                                   )
-                      ),
-               column(3
-                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the range"
-                                   ,min = 0, max = 1, value = 0.2, step = 0.05
-                                   )
-                      )
-               # , column(3
-               #        , sliderInput(inoutId = ''))
                )
              ),
             
@@ -140,16 +126,18 @@ ui <- navbarPage(
              
              fluidRow(
                column(4
-                      ,sliderInput(inputId = "probs_range", label = "Range of tracks"
-                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
-                      )
+                      ,sliderInput(inputId = "probs_range", label = "Highlit a range of tracks"
+                                    ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
+                       )
                ),
                column(3
-                      ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
+                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the range"
                                    ,min = 0, max = 1, value = 0.2, step = 0.05
                       )
                )
-               ),
+               # , column(3
+               #        , sliderInput(inoutId = ''))
+             ),
 
              plotlyOutput(outputId = "Scatterplot",height = "2000")
              ),
