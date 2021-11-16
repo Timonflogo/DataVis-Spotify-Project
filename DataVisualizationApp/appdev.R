@@ -134,6 +134,7 @@ ui <- navbarPage(
                       ,sliderInput(inputId = "opacity_range", label = "Visibility of top selected tracks"
                                    ,min = 0, max = 1, value = 0.2, step = 0.05
                       )
+               )
                ),
 
              plotlyOutput(outputId = "Scatterplot",height = "2000")
@@ -145,8 +146,8 @@ ui <- navbarPage(
              
              width = 11
            )
-  )
 )
+
 
 # Server ----
 server <- function(input,output){
