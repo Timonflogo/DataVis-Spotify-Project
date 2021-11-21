@@ -63,7 +63,7 @@ scater_plot_f <- function(dataInput1
     mutate(description = factor(description
                                 , levels = c('Tracks in the selected range'
                                              , 'Other tracks'))) %>% 
-    filter(time_played_minutes > time_played_start & time_played_minutes <= 200)
+    filter(time_played_minutes > time_played_start & time_played_minutes <= time_played_end)
   
   axis = list(
     showline = FALSE,
