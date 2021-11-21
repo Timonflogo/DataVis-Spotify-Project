@@ -108,7 +108,7 @@ stream_selected_c <- stream_selected_c %>%
   mutate(weekday = weekdays(date)) %>% # extracting weekdays form the date
   mutate(year_week = as.numeric(strftime(date, format = "%Y%W")) + 1) %>% 
   mutate(start_day_week = floor_date(date,unit = "week", week_start = 1)) %>% 
-  mutate(month = months(start_day_week)) %>% 
+  mutate(month = months(date)) %>% 
   relocate(c(date
              , month
              , year_week
@@ -119,18 +119,18 @@ stream_selected_c <- stream_selected_c %>%
   relocate(c(track_id
              , artist_id)
            , .before = trackName) %>% 
-  select(-c(danceability:tempo_per_ms)) %>% 
+  #select(-c(danceability:tempo_per_ms)) %>% 
   inner_join(readRDS('DataVisualizationApp/Data/artist_genre_split.rds')
              , by = 'artist_id') %>% 
   relocate(genre
            , .after = artistName)
   
-# artist_genre <- readRDS('DataVisualizationApp/Data/artist_genre_split.rds') %>% 
+# artist_genre <- readRDS('DataVisualizationApp/Data/artist_genre_split.rds') %>%
 #   inner_join(stream_selected_c
 #              , by = 'artist_id')
-
-
-  
+# 
+# 
+# 
 # saveRDS(stream_selected_c, file = "R_dataframe/stream_selected_c_clean.rds")
 
 
