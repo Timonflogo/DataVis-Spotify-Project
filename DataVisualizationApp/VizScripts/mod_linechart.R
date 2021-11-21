@@ -1,7 +1,10 @@
 #df <- readRDS("Data/stream_selected_c_clean.rds") 
 #dataInput1 <- df
 
-linechart <- function(dataInput1){
+
+df_linechart <- function(dataInput1){
+  
+  #Else the following is run:
   line_group_weekday <- dataInput1 %>% 
     melt(1:13) %>% # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% # dont use this, its not working
     group_by(weekday, variable) %>% 
@@ -9,6 +12,20 @@ linechart <- function(dataInput1){
     mutate(weekday = ordered(weekday, levels=c("Monday", "Tuesday", "Wednesday", "Thursday", 
                                                "Friday", "Saturday", "Sunday"))) %>% 
     spread(variable, value)
+  
+  #Return the data frame which is used for the plot
+  return(line_group_weekday)
+}
+
+
+linechart <- function(dataInput1){
+  # line_group_weekday <- dataInput1 %>% 
+  #   melt(1:13) %>% # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% # dont use this, its not working
+  #   group_by(weekday, variable) %>% 
+  #   summarise(value = sum(value)) %>% 
+  #   mutate(weekday = ordered(weekday, levels=c("Monday", "Tuesday", "Wednesday", "Thursday", 
+  #                                              "Friday", "Saturday", "Sunday"))) %>% 
+  #   spread(variable, value)
   
   
   Linechart_plotly <- plot_ly(line_group_weekday, x = ~weekday, y = ~danceability_exposed , name = 'Danceability', type = 'scatter', mode = 'marker',

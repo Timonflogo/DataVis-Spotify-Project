@@ -67,40 +67,40 @@ ui <- navbarPage(
              
              plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100),
              
-             fluidRow(
-               column(
-                 uiOutput("back2")
-                 ,width = 1), 
-               column(
-                 actionButton("monday", "Monday")
-                 ,width = 1
-               ),
-               column(
-                 actionButton("tuesday", "Tuesday")
-                 ,width = 1
-               ),
-               column(
-                 actionButton("wednesday", "Wednesday")
-                 ,width = 1
-               ),
-               column(
-                 actionButton("thursday", "Thursday")
-                 ,width = 1
-               ),
-               column(
-                 actionButton("friday", "Friday")
-                 ,width = 1
-               ),
-               column(
-                 actionButton("saturday", "Saturday")
-                 ,width = 1
-               ),
-               column(
-                 actionButton("sunday", "Sunday")
-                 ,width = 1
-               )
-               
-             ),
+             # fluidRow(
+             #   column(
+             #     uiOutput("back2")
+             #     ,width = 1), 
+             #   column(
+             #     actionButton("monday", "Monday")
+             #     ,width = 1
+             #   ),
+             #   column(
+             #     actionButton("tuesday", "Tuesday")
+             #     ,width = 1
+             #   ),
+             #   column(
+             #     actionButton("wednesday", "Wednesday")
+             #     ,width = 1
+             #   ),
+             #   column(
+             #     actionButton("thursday", "Thursday")
+             #     ,width = 1
+             #   ),
+             #   column(
+             #     actionButton("friday", "Friday")
+             #     ,width = 1
+             #   ),
+             #   column(
+             #     actionButton("saturday", "Saturday")
+             #     ,width = 1
+             #   ),
+             #   column(
+             #     actionButton("sunday", "Sunday")
+             #     ,width = 1
+             #   )
+             #   
+             # ),
              
              fluidRow(
                column(
@@ -111,6 +111,12 @@ ui <- navbarPage(
                  plotOutput(outputId = "Radarchart",width = '100%')
                  ,width = 4
                )
+             ),
+             
+             fluidRow(
+               column(uiOutput("back2"),width = 1)
+               ,column(p("You have selected the following weekdays: "),width = 3)
+               ,column(textOutput("s_weekday",inline = T),width = 4),
              ),
              
              fluidRow(
@@ -226,8 +232,12 @@ server <- function(input,output){
   
   ### Line chart ----
   
+  linechart_data <- reactive({
+    df_linechart(dataInput1 = masterData())
+  })
+  
   output$Linechart <- renderPlotly({
-    linechart(dataInput1 = masterData())
+    linechart(dataInput1 = linechart_data())
   })
   
   ### Scatter plot ----
@@ -251,13 +261,14 @@ server <- function(input,output){
   ### Drill down on line chart ----
   
   selected_weekday <- reactiveVal(value = weekdays) #This function is a container of the selected artist
-  output$s_weekday <- renderText({ #text to render selected value
-    selected_weekday()
-  })
   
   observe({
     pc <- event_data("plotly_click")$x #x = the label, pc = plotly click
     if (isTRUE(pc %in% weekdays)) selected_weekday(pc)
+  })
+  
+  output$s_weekday <- renderText({ #text to render selected value
+    selected_weekday()
   })
   
   ### Drill down heatmap ----
@@ -304,7 +315,7 @@ server <- function(input,output){
   
   output$back2 <- renderUI({
     if (length(selected_weekday())) 
-      actionButton(inputId = "clearHeatmap",label = "Back",icon = icon("chevron-left"))
+      actionButton(inputId = "clearHeatmap",label = "Reset weekday",icon = icon("refresh"))
   })
   
   # clear the chosen category on back button press
