@@ -28,7 +28,7 @@ linechart <- function(dataInput1){
   #   spread(variable, value)
   
   
-  Linechart_plotly <- plot_ly(line_group_weekday, x = ~weekday, y = ~danceability_exposed , name = 'Danceability', type = 'scatter', mode = 'marker',
+  Linechart_plotly <- plot_ly(dataInput1, x = ~weekday, y = ~danceability_exposed , name = 'Danceability', type = 'scatter', mode = 'marker',
                               line = list(color = 'rgb(166,206,227)', width = 4))
   Linechart_plotly <- Linechart_plotly %>% add_trace(y = ~energy_exposed, name = 'Energy', line = list(color = 'rgb(31,120,180)', width = 4))
   Linechart_plotly <- Linechart_plotly %>% add_trace(y = ~loudness_exposed, name = 'Loudness', line = list(color = 'rgb(178,223,138)', width = 4))
