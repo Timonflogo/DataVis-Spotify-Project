@@ -63,6 +63,8 @@ ui <- navbarPage(
                         )
              ),
              
+             textOutput(outputId = "FilterText"),
+             
              plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100),
              
              fluidRow(
@@ -110,8 +112,6 @@ ui <- navbarPage(
                  ,width = 4
                )
              ),
-             
-             textOutput(outputId = "FilterText"),
              
              fluidRow(
              column(3

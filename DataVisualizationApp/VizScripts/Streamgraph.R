@@ -30,9 +30,13 @@ source("ConvenienceFunctions/ConvenienceFunctions.R")
 streamgraph2 <- function(){
   
   xax <- stream_group_date_artist %>% 
-    select(date,year,month) %>%
+    ungroup() %>% 
+    select(date) %>%
+    mutate(year = as.numeric(substr(x = date,start = 1,stop = 4))
+           ,monthNo = as.numeric(substr(x = date,start = 6,stop = 7))) %>% 
+    mutate(monthName = month.name[monthNo]) %>% 
     distinct() %>% 
-    group_by(year,month) %>% 
+    group_by(year,monthNo) %>% 
     mutate(rn = 1:n()) %>% 
     ungroup() %>% 
     mutate(rn2 = 1:n()) %>% 
@@ -50,7 +54,7 @@ streamgraph2 <- function(){
           ,axis.ticks = element_blank()
           ,legend.background = element_rect(fill = "#E6E6E6")
     ) +
-    scale_x_continuous(labels = xax$month #Vector of labels
+    scale_x_continuous(labels = xax$monthName #Vector of labels
                        ,breaks = xax$rn2
                        ) +
     labs(fill = 'Features',x = "Time",y = "Hours played")
