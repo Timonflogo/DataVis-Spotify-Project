@@ -132,13 +132,20 @@ ui <- navbarPage(
              
              fluidRow(
                column(3
-                      ,sliderInput(inputId = "probs_range", label = "Highlight tracks in percentiles of minutes played (e.g. 0.9 - 1.0 = Top 10%)"
-                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
+                      ,sliderInput(inputId = "probs_range"
+                                   , label = "Highlight tracks in percentiles of minutes played (e.g. 0.9 - 1.0 = Top 10%)"
+                                   , min = 0
+                                   , max = 1, value = c(0.9, 1)
+                                   , step = 0.05
                       )
                ),
                column(2
-                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the specified percentile range"
-                                   ,min = 0, max = 1, value = 0.2, step = 0.05
+                      ,sliderInput(inputId = "opacity_blue"
+                                   , label = "Visibility of tracks outside the specified percentile range"
+                                   , min = 0
+                                   , max = 1
+                                   , value = 0.2
+                                   , step = 0.05
                       )
                ),
                column(2
@@ -159,15 +166,15 @@ ui <- navbarPage(
                )
                , column(2
                       , numericInput(inputId = "time_played_end"
-                                     , label = "Maximum total minutes played per track"
+                                     , label = "Maximum total minutes played per track (Max. 10000)"
                                      , min = 1
                                      , max = 10000
-                                     , value = 10)
+                                     , value = 10000)
 
                )
              ),
              
-             plotlyOutput(outputId = "Scatterplot",height = "800"),
+             plotlyOutput(outputId = "Scatterplot",height = "900"),
              
              # textOutput(outputId = "c_artist"),
              # 
@@ -199,7 +206,7 @@ server <- function(input,output){
         date >= filter_start_date
         ,date <= filter_end_date
         ,artistName %in% current_artist() #in operator, as all artist are set by default
-        ,weekday %in% selected_weekday() #in operator, as all weekdays are set by default
+        #,weekday %in% selected_weekday() #in operator, as all weekdays are set by default
         )
     
   })
@@ -249,13 +256,14 @@ server <- function(input,output){
                   , opacity_blue = input$opacity_blue
                   , time_played_start = input$time_played_start
                   , time_played_end = input$time_played_end
+                  , selected_weekday = selected_weekday()
                   )
   })
   
   ### Radar chart ----
   
   output$Radarchart <- renderPlot({
-    radarplot(dataInput1 = masterData())
+    radarplot(dataInput1 = masterData(),selected_weekday = selected_weekday())
   })
   
   ### Drill down on line chart ----
@@ -294,7 +302,8 @@ server <- function(input,output){
   #### Data for the bar chart ----
   
   barchart_data <- reactive({
-    df_barchart(dataInput1 = masterData(),current_artist = current_artist(),NumArtists = input$NumArtists,NumTracks = input$NumTracks)
+    df_barchart(dataInput1 = masterData(),current_artist = current_artist(),selected_weekday = selected_weekday()
+                ,NumArtists = input$NumArtists,NumTracks = input$NumTracks)
   })
   
   output$bar <- renderPlotly({
