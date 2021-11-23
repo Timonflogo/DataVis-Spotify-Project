@@ -53,11 +53,13 @@ streamgraph2 <- function(){
           ,axis.text.x = element_text(angle = 0)
           ,axis.ticks = element_blank()
           ,legend.background = element_rect(fill = "#E6E6E6")
+          ,plot.title = element_text(hjust = 0.5,size = 16,color = "black",face = 'bold')
     ) +
     scale_x_continuous(labels = xax$monthName #Vector of labels
                        ,breaks = xax$rn2
                        ) +
-    labs(fill = 'Features',x = "Time",y = "Hours played")
+    labs(fill = 'Features',x = "Time",y = "Hours played") +
+    ggtitle("Amount of streaming")
 }
 
 #streamgraph2()
