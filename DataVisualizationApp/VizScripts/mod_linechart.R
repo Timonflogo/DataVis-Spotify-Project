@@ -38,8 +38,8 @@ linechart <- function(dataInput1){
   Linechart_plotly <- Linechart_plotly %>% add_trace(y = ~liveness_exposed, name = 'Liveness', line = list(color = 'rgb(253,191,111)', width = 4))
   Linechart_plotly <- Linechart_plotly %>% add_trace(y = ~valence_exposed, name = 'Valence', line = list(color = 'rgb(255,127,0)', width = 4))
   Linechart_plotly <- Linechart_plotly %>% add_trace(y = ~tempo_exposed, name = 'Tempo', line = list(color = 'rgb(202,178,214)', width = 4))
-  Linechart_plotly <- Linechart_plotly %>% layout(title = "Aggregated weekly Music exposure split up by audio features",
-                                                  xaxis = list(title = "Weekday"),
+  Linechart_plotly <- Linechart_plotly %>% layout(title = list(text = "Aggregated weekly Music exposure split up by audio features",font = list(size = 16)))
+  Linechart_plotly <- Linechart_plotly %>% layout(xaxis = list(title = "Weekday",font = list(size = 10)),
                                                   yaxis = list (title = "Music Exposure"),
                                                   plot_bgcolor  = "rgb(230, 230, 230)", 
                                                   paper_bgcolor = "rgb(230, 230, 230)",

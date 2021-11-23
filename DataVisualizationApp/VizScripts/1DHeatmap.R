@@ -35,16 +35,6 @@ df_heatmap <- function(dataInput1,selected_weekday = selected_weekday()) {
 oneDHeatmap <- function(heatmap_data = heatmap_data()){
   
   options(scipen = 999)
-  
-  ## d = df_heatmap!!! This is moved to the data reactive function
-  
-  # d <- dataInput1 %>% 
-  #   select(time,msPlayed) %>% 
-  #   group_by(time) %>% 
-  #   mutate(msPlayed = sum(msPlayed)
-  #          ,mPlayed = msPlayed / 60000 #msPlayed is already aggregated
-  #          ,time = substr(time,start = 1,stop = 5)) %>%
-  #   unique()
 
   #Create a grid of all hour:minute value during a day
   totaltime <- expand.grid(c(0:23),c(0:59))
@@ -85,10 +75,12 @@ oneDHeatmap <- function(heatmap_data = heatmap_data()){
           ,axis.ticks.y = element_blank()
           ,axis.text.y = element_blank()
           ,legend.background = element_rect(fill = "#E6E6E6")
+          ,plot.title = element_text(hjust = 0.5)
     ) +
     scale_x_continuous(labels = xax$hour #Vector of labels
                        ,breaks = xax$rn2
     ) +
     scale_fill_gradient2(low = "snow1", high = "navyblue") +
-    labs(fill = 'Time played',x = "Hour",y = "Hours played")
+    labs(fill = 'Time played',x = "Hour",y = "Hours played") +
+    ggtitle("Density of streaming time per day")
 }
