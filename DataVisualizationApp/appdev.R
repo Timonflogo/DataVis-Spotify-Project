@@ -132,13 +132,20 @@ ui <- navbarPage(
              
              fluidRow(
                column(3
-                      ,sliderInput(inputId = "probs_range", label = "Highlight tracks in percentiles of minutes played (e.g. 0.9 - 1.0 = Top 10%)"
-                                   ,min = 0.1, max = 1, value = c(0.1, 0.9), step = 0.05
+                      ,sliderInput(inputId = "probs_range"
+                                   , label = "Highlight tracks in percentiles of minutes played (e.g. 0.9 - 1.0 = Top 10%)"
+                                   , min = 0
+                                   , max = 1, value = c(0.9, 1)
+                                   , step = 0.05
                       )
                ),
                column(2
-                      ,sliderInput(inputId = "opacity_blue", label = "Visibility of tracks outside the specified percentile range"
-                                   ,min = 0, max = 1, value = 0.2, step = 0.05
+                      ,sliderInput(inputId = "opacity_blue"
+                                   , label = "Visibility of tracks outside the specified percentile range"
+                                   , min = 0
+                                   , max = 1
+                                   , value = 0.2
+                                   , step = 0.05
                       )
                ),
                column(2
@@ -159,10 +166,10 @@ ui <- navbarPage(
                )
                , column(2
                       , numericInput(inputId = "time_played_end"
-                                     , label = "Maximum total minutes played per track"
+                                     , label = "Maximum total minutes played per track (Max. 10000)"
                                      , min = 1
                                      , max = 10000
-                                     , value = 10)
+                                     , value = 10000)
 
                )
              ),
