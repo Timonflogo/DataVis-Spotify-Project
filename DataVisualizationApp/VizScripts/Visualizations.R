@@ -31,13 +31,14 @@ ribbonchart <- function(dataInput1){
 
 ### Barchart data ----
 
-df_barchart <- function(dataInput1,current_artist = current_artist()
+df_barchart <- function(dataInput1,current_artist = current_artist(),selected_weekday = selected_weekday()
                         ,NumArtists = 10,NumTracks = 10){
   
   #Checks if there is selected an artist. If not then:
   if (length(current_artist) != 1) {
     return(
       df_barchart <- dataInput1 %>% 
+        filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekday 
         group_by(artist_id,artistName) %>% 
         summarise(msPlayed = sum(msPlayed)) %>%
         mutate(hsPlayed = msPlayed/3600000) %>%
@@ -50,6 +51,7 @@ df_barchart <- function(dataInput1,current_artist = current_artist()
   
   #Else the following is run:
   df_barchart <- dataInput1 %>% 
+    filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekdays 
     filter(artistName %in% current_artist) %>% 
     group_by(track_id,trackName) %>% 
     summarise(msPlayed = sum(msPlayed)) %>% 

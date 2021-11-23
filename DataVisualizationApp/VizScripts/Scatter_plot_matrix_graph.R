@@ -5,6 +5,7 @@ scater_plot_f <- function(dataInput1
          , time_played_end # between 0 and max(d$time_played_minutes)
          , opacity_red # between 0 and 1
          , opacity_blue # between 0 and 1
+         , selected_weekday = selected_weekday() # the weekday filter
          )
 {
   ## Libraries
@@ -16,6 +17,7 @@ scater_plot_f <- function(dataInput1
   
   options(scipen=999)
   time_listened <- dataInput1 %>% 
+    filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekday %>% 
     group_by(artistName
              , trackName) %>% 
     summarise(time_played_minutes = sum(msPlayed) / 60000) %>% 
@@ -23,6 +25,7 @@ scater_plot_f <- function(dataInput1
     mutate(time_played_minutes = round(time_played_minutes,2)) 
   
   d <- dataInput1 %>% 
+    filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekday %>% 
     distinct(artistName
              , trackName
              , duration_ms

@@ -199,7 +199,7 @@ server <- function(input,output){
         date >= filter_start_date
         ,date <= filter_end_date
         ,artistName %in% current_artist() #in operator, as all artist are set by default
-        ,weekday %in% selected_weekday() #in operator, as all weekdays are set by default
+        #,weekday %in% selected_weekday() #in operator, as all weekdays are set by default
         )
     
   })
@@ -249,13 +249,14 @@ server <- function(input,output){
                   , opacity_blue = input$opacity_blue
                   , time_played_start = input$time_played_start
                   , time_played_end = input$time_played_end
+                  , selected_weekday = selected_weekday()
                   )
   })
   
   ### Radar chart ----
   
   output$Radarchart <- renderPlot({
-    radarplot(dataInput1 = masterData())
+    radarplot(dataInput1 = masterData(),selected_weekday = selected_weekday())
   })
   
   ### Drill down on line chart ----
@@ -294,7 +295,8 @@ server <- function(input,output){
   #### Data for the bar chart ----
   
   barchart_data <- reactive({
-    df_barchart(dataInput1 = masterData(),current_artist = current_artist(),NumArtists = input$NumArtists,NumTracks = input$NumTracks)
+    df_barchart(dataInput1 = masterData(),current_artist = current_artist(),selected_weekday = selected_weekday()
+                ,NumArtists = input$NumArtists,NumTracks = input$NumTracks)
   })
   
   output$bar <- renderPlotly({

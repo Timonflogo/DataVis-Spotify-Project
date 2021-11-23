@@ -18,9 +18,10 @@ getSeason <- function(DATES) {
 
 # Radarchart function
 
-radarplot <- function(dataInput1){
+radarplot <- function(dataInput1,selected_weekday = selected_weekday()){
   
   radar_gg <- dataInput1 %>%
+    filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekday
     mutate(season = as.factor(getSeason(date))) %>%
     select(1, 2:6, 42, 7:41) %>% 
     melt(1:14) %>%  # melt(which(names(dataInput1) == "track_id"):which(names(dataInput1) == "duration_ms")) %>% dont use this, its not working
