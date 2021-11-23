@@ -78,7 +78,8 @@ barchart <- function(dataInput1,current_artist = current_artist()){
           ,type = "bar") %>%
     layout(title = current_artist %||% "Artist") %>%  #go for current Artist unless else is selected
     layout(plot_bgcolor='#E6E6E6') %>% 
-    layout(paper_bgcolor='#E6E6E6')
+    layout(paper_bgcolor='#E6E6E6') %>% 
+    layout(xaxis = list(title = if(length(current_artist) != 1){'Artist'} else {'Track'}))
 }
 
 ### Horizonchart ----
