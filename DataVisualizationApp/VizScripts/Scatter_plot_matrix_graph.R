@@ -12,10 +12,8 @@ scater_plot_f <- function(dataInput1
   pacman::p_load("dplyr"
                  , "plotly"
   )
-  
-  # dataInput1 <- readRDS("Data/stream_selected_c_clean.rds") 
-  
   options(scipen=999)
+  # dataframe for time listened per each song in minutes
   time_listened <- dataInput1 %>% 
     filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekday %>% 
     group_by(artistName
@@ -24,6 +22,7 @@ scater_plot_f <- function(dataInput1
     ungroup() %>% 
     mutate(time_played_minutes = round(time_played_minutes,2)) 
   
+  # dataframe with unique tracks and artists with the features
   d <- dataInput1 %>% 
     filter(weekday %in% selected_weekday) %>% #Filter masterdata with selected weekday %>% 
     distinct(artistName
@@ -39,33 +38,35 @@ scater_plot_f <- function(dataInput1
              , valence
              , tempo)
   
-  df_scatter <- d %>%
+  # Joining time listened dataframe with unique tracks and artists
+  df_scatter <- d %>% # final dataframe for the plot
     left_join(time_listened,
               by = c('artistName' = 'artistName'
                      , 'trackName' = 'trackName')) %>%
-    #@replace the probs with userInput #########################################################
-  mutate(
-    bin = ifelse(
-      time_played_minutes > quantile(time_played_minutes
-                                     , probs =  probs_range_start) &
-        time_played_minutes <= quantile(time_played_minutes
-                                        , probs = probs_range_end),
-      yes = 'rgba(255, 0, 0, 0.5)', # red
-      no = 'rgba(135, 206, 250, 0.5)'
-    )
-  ) %>% # blue
-    mutate(bin = factor(bin, levels = c(
-      'rgba(255, 0, 0, 0.5)', 'rgba(135, 206, 250, 0.5)'
-    ))) %>%
+    # filter for selecting quantiles
+    mutate(
+      bin = ifelse(time_played_minutes > quantile(time_played_minutes, probs =  probs_range_start) &
+                     time_played_minutes <= quantile(time_played_minutes, probs = probs_range_end),
+                   # necessary for distinct 2 colors in scatterplot
+                   yes = 'rgba(255, 0, 0, 0.5)', # red
+                   no = 'rgba(135, 206, 250, 0.5)' # blue
+                   )) %>% 
+    mutate(bin = factor(bin, levels = c('rgba(255, 0, 0, 0.5)' # creating the colors as factor
+                                        , 'rgba(135, 206, 250, 0.5)'))
+           ) %>%
+    # filter for opacity 
     mutate(opacity =  ifelse(bin == 'rgba(255, 0, 0, 0.5)'
                              , yes =  opacity_red #opacity_red
                              , no = opacity_blue)) %>%
     mutate(description = ifelse(test = bin == 'rgba(255, 0, 0, 0.5)'
-                                , yes = 'Tracks in the selected range'
-                                , no = 'Other tracks')) %>% 
+                                # text that is shown in the legend
+                                , yes = 'Tracks in the selected range' # text shown for red color
+                                , no = 'Other tracks') # text shown for blue color
+           ) %>% 
     mutate(description = factor(description
                                 , levels = c('Tracks in the selected range'
                                              , 'Other tracks'))) %>% 
+    # filter for time played
     filter(time_played_minutes > time_played_start & time_played_minutes <= time_played_end)
   
   axis = list(
@@ -106,8 +107,8 @@ scater_plot_f <- function(dataInput1
       ),
       name = levels(df_scatter$description)[levels(df_scatter$bin) == i],
       text =  ~ factor(trackName, labels = unique(trackName)),
-      diagonal = list(visible = F),
-      showupperhalf = F,
+      diagonal = list(visible = F), # deactivate diagonals
+      showupperhalf = F, # deactivate upper half of scatter
       marker = list(
         color = ~ bin,
         group = ~ bin,
@@ -122,7 +123,7 @@ scater_plot_f <- function(dataInput1
   
   scatter_plot <- fig %>%
     layout(
-      title = "Scatterplot Matrix",
+      title = "Scatterplot Matrix of track features",
       hovermode = 'closest',
       dragmode = 'select',
       showlegend = T, 
