@@ -105,17 +105,17 @@ ui <- navbarPage(
              fluidRow(
                column(
                 plotlyOutput(outputId = "Linechart",width = '100%')
-                ,width = 8
+                ,width = 7
                ),
                column(
-                 plotOutput(outputId = "Radarchart",width = '100%')
-                 ,width = 4
+                 plotlyOutput(outputId = "Radarchart",width = '100%')
+                 ,width = 5
                )
              ),
              
              fluidRow(
-               column(uiOutput("back2"),width = 1)
-               ,column(p("You have selected the following weekdays: "),width = 3)
+               column(uiOutput("back2"),width = 2)
+               ,column(p("You have selected the following weekdays: "),width = 2)
                ,column(textOutput("s_weekday",inline = T),width = 4),
              ),
              
@@ -174,13 +174,13 @@ ui <- navbarPage(
                )
              ),
              
-             plotlyOutput(outputId = "Scatterplot",height = "800"),
+             plotlyOutput(outputId = "Scatterplot",height = "900"),
              
              # textOutput(outputId = "c_artist"),
              # 
              # dataTableOutput(outputId = "BrushedData"),
              
-             width = 11
+             width = 12
            )
   )
 )
@@ -262,7 +262,7 @@ server <- function(input,output){
   
   ### Radar chart ----
   
-  output$Radarchart <- renderPlot({
+  output$Radarchart <- renderPlotly({
     radarplot(dataInput1 = masterData(),selected_weekday = selected_weekday())
   })
   

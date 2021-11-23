@@ -69,6 +69,7 @@ scater_plot_f <- function(dataInput1
     # filter for time played
     filter(time_played_minutes > time_played_start & time_played_minutes <= time_played_end)
   
+  # specifying features of each individual plot in the scatter plot
   axis = list(
     showline = FALSE,
     zeroline = FALSE,
@@ -84,17 +85,20 @@ scater_plot_f <- function(dataInput1
   
   fig <- plot_ly()
   
-  fig <- fig %>% 
+  # setting the background of the overall scatterplot 
+  fig <- fig %>%
     layout(plot_bgcolor  = "rgba(0, 0, 0, 0)",
            paper_bgcolor = "rgba(0, 0, 0, 0)",
            fig_bgcolor   = "rgba(0, 0, 0, 0)")
   
+# loop for creating 1 plot for selected tracks, 1 for others
+  # then these 2 plots are merged into 1 by add_trace
   for (i in unique(df_scatter$bin)) {
     fig <- add_trace(
       fig,
-      data = df_scatter[df_scatter$bin == i,],
-      type = 'splom',
-      dimensions = list(
+      data = df_scatter[df_scatter$bin == i,], # dataframe for each plot
+      type = 'splom', # specifying scatter plot matrix type of plot
+      dimensions = list( # selected variables for the plot and the values
         list(label = 'danceability', values = ~ danceability),
         list(label = 'energy', values = ~ energy),
         list(label = 'loudness', values = ~ loudness),
@@ -104,18 +108,23 @@ scater_plot_f <- function(dataInput1
         list(label = 'liveness', values = ~ liveness),
         list(label = 'valence', values = ~ valence),
         list(label = 'tempo' , values = ~ tempo)
-      ),
-      name = levels(df_scatter$description)[levels(df_scatter$bin) == i],
-      text =  ~ factor(trackName, labels = unique(trackName)),
-      diagonal = list(visible = F), # deactivate diagonals
-      showupperhalf = F, # deactivate upper half of scatter
-      marker = list(
-        color = ~ bin,
-        group = ~ bin,
-        opacity = ~ opacity, 
-        colorscale = pl_colorscale,
-        size = 5,
-        line = list(width = 1,
+      )
+      # necessary for having a legend showing 2 categories - selected and other tracks
+      , name = levels(df_scatter$description)[levels(df_scatter$bin) == i]
+      # names of the tracks when hovering over, otherwise it shows the score
+      , text =  ~ factor(trackName, labels = unique(trackName))
+      , diagonal = list(visible = F), # deactivate diagonals
+      showupperhalf = F # deactivate upper half of scatter
+      , marker = list(
+        color = ~ bin # defining colors for each category of the bins - selected and other tracks
+        # , group = ~ bin
+        # opacity for the scatterplot
+        , opacity = ~ opacity
+        , colorscale = pl_colorscale
+        # size of the dots
+        , size = 5
+        # width of the lines of the dots and color of the lines 
+        , line = list(width = 1,
                     color = 'rgb(230,230,230)')
       )
     )
@@ -124,9 +133,12 @@ scater_plot_f <- function(dataInput1
   scatter_plot <- fig %>%
     layout(
       title = "Scatterplot Matrix of track features",
+      # hover functionality
       hovermode = 'closest',
       dragmode = 'select',
+      # show the legend
       showlegend = T, 
+      # background color of each individual plot in the scatter plot
       plot_bgcolor = 'rgba(240,240,240, 0.95)',
       xaxis = list(
         domain = NULL,
@@ -135,16 +147,16 @@ scater_plot_f <- function(dataInput1
         gridcolor = '#ffff',
         ticklen = 4,
         titlefont = list(size = 13)
-      ),
-      yaxis1 = list(
+      )
+      , yaxis1 = list(
         domain = NULL,
         showline = F,
         zeroline = F,
         gridcolor = '#ffff',
         ticklen = 4,
         titlefont = list(size = 13)
-      ),
-      xaxis2 = axis,
+      )
+      , xaxis2 = axis,
       xaxis3 = axis,
       xaxis4 = axis,
       xaxis5 = axis,
