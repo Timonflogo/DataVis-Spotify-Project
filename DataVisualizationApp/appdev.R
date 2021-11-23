@@ -109,13 +109,13 @@ ui <- navbarPage(
                ),
                column(
                  plotlyOutput(outputId = "Radarchart",width = '100%')
-                 ,width = 4
+                 ,width = 5
                )
              ),
              
              fluidRow(
-               column(uiOutput("back2"),width = 1)
-               ,column(p("You have selected the following weekdays: "),width = 3)
+               column(uiOutput("back2"),width = 2)
+               ,column(p("You have selected the following weekdays: "),width = 2)
                ,column(textOutput("s_weekday",inline = T),width = 4),
              ),
              
@@ -180,7 +180,7 @@ ui <- navbarPage(
              # 
              # dataTableOutput(outputId = "BrushedData"),
              
-             width = 11
+             width = 12
            )
   )
 )
