@@ -105,10 +105,10 @@ ui <- navbarPage(
              fluidRow(
                column(
                 plotlyOutput(outputId = "Linechart",width = '100%')
-                ,width = 8
+                ,width = 7
                ),
                column(
-                 plotOutput(outputId = "Radarchart",width = '100%')
+                 plotlyOutput(outputId = "Radarchart",width = '100%')
                  ,width = 4
                )
              ),
@@ -262,7 +262,7 @@ server <- function(input,output){
   
   ### Radar chart ----
   
-  output$Radarchart <- renderPlot({
+  output$Radarchart <- renderPlotly({
     radarplot(dataInput1 = masterData(),selected_weekday = selected_weekday())
   })
   
