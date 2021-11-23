@@ -57,6 +57,9 @@ ui <- navbarPage(
              tags$style('.container-fluid {
                              background-color: #E6E6E6;
               }'),
+             
+             uiOutput("removeOther"),
+             
              plotOutput(outputId = "Streamgraph", 
                         brush = brushOpts(id = "plot1_brush", 
                                           direction = "x"
@@ -190,13 +193,18 @@ server <- function(input,output){
   
   ## Getting data ----
   
+  ### Stream group data ----
+  streamgraph_data <- reactive({
+    streamgraph_df(removeOther = removeOther())
+  })
+  
   ### masterData ----
   masterData <- reactive({
     
     df <- readRDS("Data/stream_selected_c_clean.rds")
-    data <- brushedPoints(df = stream_group_date_artist,brush = input$plot1_brush)
+    data <- brushedPoints(df = streamgraph_data(),brush = input$plot1_brush)
     if (nrow(data) == 0)
-      data <- stream_group_date_artist
+      data <- streamgraph_data()
     
     filter_start_date <<- sort(data$date,decreasing = FALSE)[1] # <<- to assign to global env.
     filter_end_date <<- sort(data$date,decreasing = TRUE)[1] # <<- to assign to global env.
@@ -233,7 +241,7 @@ server <- function(input,output){
   
   ### Streamgraph ----
   output$Streamgraph <- renderPlot({
-    streamgraph2()
+    streamgraph2(dataInput1 = streamgraph_data())
   }
   )
   
@@ -316,6 +324,8 @@ server <- function(input,output){
     if (isTRUE(cd %in% categories)) current_artist(cd)
   })
   
+  ### Buttons - back and back2 ----
+  
   # populate back button if category is chosen
   output$back <- renderUI({
     if (length(current_artist())) 
@@ -332,7 +342,19 @@ server <- function(input,output){
   observeEvent(eventExpr = input$clearHeatmap,handlerExpr = selected_weekday(weekdays))
   
   
+  ### Button - Remove other ----
+  output$removeOther <- renderUI({
+    if(removeOther()) { #reomveOther is by default FALSE, hence the else statement is executed
+      actionButton("removeOther", "Include other")
+    } else {
+      actionButton("removeOther", "Remove other")
+    }
+  })
   
+  # Make a variable containing T/F for whether the other is removed or not
+  removeOther <- reactiveVal(value = FALSE)
+  
+  observeEvent(eventExpr = input$removeOther,handlerExpr = removeOther(!removeOther())) #the '!' will invert the removeOther, hence from T to F or F to T
   
   
   ## Test ----

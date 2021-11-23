@@ -27,9 +27,9 @@ source("ConvenienceFunctions/ConvenienceFunctions.R")
 # }
 
 ## Streamgraph2 ----
-streamgraph2 <- function(){
+streamgraph2 <- function(dataInput1){
   
-  xax <- stream_group_date_artist %>% 
+  xax <- dataInput1 %>% 
     ungroup() %>% 
     select(date) %>%
     mutate(year = as.numeric(substr(x = date,start = 1,stop = 4))
@@ -42,7 +42,7 @@ streamgraph2 <- function(){
     mutate(rn2 = 1:n()) %>% 
     filter(rn == 1)
 
-  ggplot(stream_group_date_artist, aes(x = index, y = hsPlayed, fill = category,label = category)) +
+  ggplot(dataInput1, aes(x = index, y = hsPlayed, fill = category,label = category)) +
     geom_stream() + #bw = wigglyness
     scale_fill_manual(values = RColorBrewer::brewer.pal(n = 12,name = 'Set3')) +
     theme(plot.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6")
