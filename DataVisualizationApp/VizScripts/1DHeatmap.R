@@ -59,6 +59,8 @@ oneDHeatmap <- function(heatmap_data = heatmap_data()){
     mutate(rn = 1:n()) %>% 
     filter(rn == 1)
   
+  Hcol <- c('rgb(236,231,242)', 'rgb(43,140,190)')
+  
   #The plot
   ggplot(data, aes(x = index,y = 1, fill = mPlayed)) + 
     geom_tile() +
@@ -78,6 +80,7 @@ oneDHeatmap <- function(heatmap_data = heatmap_data()){
     scale_x_continuous(labels = xax$hour #Vector of labels
                        ,breaks = xax$rn2
     ) +
+    scale_fill_gradient2(low = "snow1", high = "navyblue") +
     labs(fill = 'Time played',x = "Hour",y = "Hours played") +
     ggtitle("Density of streaming time per day")
 }

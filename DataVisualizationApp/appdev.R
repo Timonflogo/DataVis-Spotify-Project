@@ -5,7 +5,7 @@ pacman::p_load(reshape2,ggplot2,ggstream,streamgraph,RColorBrewer,Hmisc,dplyr,gr
 # Commands to run on initiating the app
 df <- readRDS("Data/stream_selected_c_clean.rds")
 source("ConvenienceFunctions/ConvenienceFunctions.R")
-source("VizScripts/Visualizations.R")
+source("VizScripts/Barchart.R")
 source("VizScripts/Streamgraph.R")
 source("VizScripts/Summary_stats.R")
 source("Data/stream_group_data.R")
