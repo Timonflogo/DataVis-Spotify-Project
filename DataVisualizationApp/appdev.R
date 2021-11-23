@@ -174,7 +174,7 @@ ui <- navbarPage(
                )
              ),
              
-             plotlyOutput(outputId = "Scatterplot",height = "800"),
+             plotlyOutput(outputId = "Scatterplot",height = "900"),
              
              # textOutput(outputId = "c_artist"),
              # 
