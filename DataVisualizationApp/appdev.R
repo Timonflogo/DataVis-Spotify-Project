@@ -23,10 +23,10 @@ setBackgroundColor(
 )
 
 # UI ----
-ui <- navbarPage(
+ui <- 
+  navbarPage(
   theme = shinytheme("cerulean"),
   fluid = TRUE, 
-  "Spotify streaming",
   setBackgroundColor("#E6E6E6"),
   
   # tabPanel(title = "Welcome",
@@ -48,7 +48,7 @@ ui <- navbarPage(
   # ),
   
   ## Tab 1 - Welcome -----
-  tabPanel(title = "Overview",
+  tabPanel( img(src = "spotify-logo.png", align = "right", height = 45, width = 141),
            h3("Spotify"),
            p("This is some text introduction"),
            
