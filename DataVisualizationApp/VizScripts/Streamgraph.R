@@ -43,7 +43,7 @@ streamgraph2 <- function(dataInput1){
     filter(rn == 1)
 
   ggplot(dataInput1, aes(x = index, y = hsPlayed, fill = category,label = category)) +
-    geom_stream() + #bw = wigglyness
+    geom_stream(sorting = "inside_out") + #bw = wigglyness
     scale_fill_manual(values = RColorBrewer::brewer.pal(n = 12,name = 'Set3')) +
     theme(plot.background = element_rect(fill = "#ffffff", colour = "#ffffff")
           ,panel.background = element_rect(fill = "#ffffff", colour = "#ffffff") 
