@@ -59,8 +59,6 @@ oneDHeatmap <- function(heatmap_data = heatmap_data()){
     mutate(rn = 1:n()) %>% 
     filter(rn == 1)
   
-  Hcol <- c('rgb(236,231,242)', 'rgb(43,140,190)')
-  
   #The plot
   ggplot(data, aes(x = index,y = 1, fill = mPlayed)) + 
     geom_tile() +
