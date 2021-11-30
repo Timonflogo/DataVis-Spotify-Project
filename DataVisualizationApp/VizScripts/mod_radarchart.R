@@ -76,9 +76,6 @@ radarplot <- function(dataInput1,selected_weekday = selected_weekday()){
           visible = T,
           range = c(0,1)
           )),
-      plot_bgcolor  = "rgb(230, 230, 230)", 
-      paper_bgcolor = "rgb(230, 230, 230)",
-      fig_bgcolor   = "rgb(230, 230, 230)",
       autosize = F, height = 500, margin = list(l=50, r=50, b=50, t=50, pad=1)
     )
   

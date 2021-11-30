@@ -24,11 +24,23 @@ setBackgroundColor(
 )
 
 # UI ----
-ui <- navbarPage(
+ui <- 
+  navbarPage(
   theme = shinytheme("cerulean"),
   fluid = TRUE, 
-  "Spotify streaming",
-  setBackgroundColor("#E6E6E6"),
+  setBackgroundColor("#ffffff"),
+  tags$style(type = 'text/css', 
+             HTML('.navbar { background-color: red;}
+                          .navbar-default .navbar-brand{color: white;}
+                          .tab-panel{ background-color: red; color: white}
+                          .navbar-default .navbar-nav > .active > a, 
+                           .navbar-default .navbar-nav > .active > a:focus, 
+                           .navbar-default .navbar-nav > .active > a:hover {
+                                color: #555;
+                                background-color: #FFFFFF;
+                            }'
+             )
+  ),
   
   # tabPanel(title = "Welcome",
   #          h1("Introduction"),
@@ -49,14 +61,13 @@ ui <- navbarPage(
   # ),
   
   ## Tab 1 - Welcome -----
-  tabPanel(title = "Overview",
-           h3("Spotify"),
-           p("This is some text introduction"),
+  tabPanel( img(src = "spotify-logo.png", align = "right", height = 45, width = 141),
+            
            
            # Main panel for page 1
            mainPanel(
              tags$style('.container-fluid {
-                             background-color: #E6E6E6;
+                             background-color: #ffffff;
               }'),
              
              uiOutput("removeOther"),

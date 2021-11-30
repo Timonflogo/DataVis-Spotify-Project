@@ -45,14 +45,14 @@ streamgraph2 <- function(dataInput1){
   ggplot(dataInput1, aes(x = index, y = hsPlayed, fill = category,label = category)) +
     geom_stream() + #bw = wigglyness
     scale_fill_manual(values = RColorBrewer::brewer.pal(n = 12,name = 'Set3')) +
-    theme(plot.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6")
-          ,panel.background = element_rect(fill = "#E6E6E6", colour = "#E6E6E6") 
+    theme(plot.background = element_rect(fill = "#ffffff", colour = "#ffffff")
+          ,panel.background = element_rect(fill = "#ffffff", colour = "#ffffff") 
           ,panel.grid.major.x = element_line(size = 0.3, color="black",linetype = "dotted")
           ,panel.grid.minor = element_blank() #Remove gridlines
           ,panel.grid.major.y = element_blank() #Remove gridlines
           ,axis.text.x = element_text(angle = 0)
           ,axis.ticks = element_blank()
-          ,legend.background = element_rect(fill = "#E6E6E6")
+          ,legend.background = element_rect(fill = "#ffffff")
           ,plot.title = element_text(hjust = 0.5,size = 16,color = "black",face = 'bold')
     ) +
     scale_x_continuous(labels = xax$monthName #Vector of labels
