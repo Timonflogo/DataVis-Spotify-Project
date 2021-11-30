@@ -13,6 +13,7 @@ source("VizScripts/Scatter_plot_matrix_graph.R")
 source("VizScripts/1DHeatmap.R")
 source("VizScripts/mod_linechart.R")
 source("VizScripts/mod_radarchart.R")
+source("VizScripts/7DHeatmap.R")
 
 #Objects for plotly observable events for drilldown
 categories <- unique(df$artistName)
@@ -69,6 +70,8 @@ ui <- navbarPage(
              textOutput(outputId = "FilterText"),
              
              plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100),
+             
+             plotOutput(outputId = "sevenDHeatmap", width = '100%', height = 100),
              
              # fluidRow(
              #   column(
@@ -305,6 +308,16 @@ server <- function(input,output){
   
   output$oneDHeatmap <- renderPlot({
     oneDHeatmap(heatmap_data = heatmap_data())
+  })
+  
+  ### 7D Heatmap ----
+  
+  weekday_heatmap <- reactive({
+    df_weekday_heatmap(dataInput1 = masterData())
+  })
+  
+  output$sevenDHeatmap <- renderPlot({
+    sevenDHeatmap(data = weekday_heatmap())
   })
   
   #### Data for the bar chart ----
