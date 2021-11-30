@@ -28,6 +28,18 @@ ui <-
   theme = shinytheme("cerulean"),
   fluid = TRUE, 
   setBackgroundColor("#ffffff"),
+  tags$style(type = 'text/css', 
+             HTML('.navbar { background-color: red;}
+                          .navbar-default .navbar-brand{color: white;}
+                          .tab-panel{ background-color: red; color: white}
+                          .navbar-default .navbar-nav > .active > a, 
+                           .navbar-default .navbar-nav > .active > a:focus, 
+                           .navbar-default .navbar-nav > .active > a:hover {
+                                color: #555;
+                                background-color: #FFFFFF;
+                            }'
+             )
+  ),
   
   # tabPanel(title = "Welcome",
   #          h1("Introduction"),
@@ -49,6 +61,7 @@ ui <-
   
   ## Tab 1 - Welcome -----
   tabPanel( img(src = "spotify-logo.png", align = "right", height = 45, width = 141),
+            
            
            # Main panel for page 1
            mainPanel(
