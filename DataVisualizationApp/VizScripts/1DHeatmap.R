@@ -74,11 +74,14 @@ oneDHeatmap <- function(heatmap_data = heatmap_data()){
           ,axis.text.y = element_blank()
           ,legend.background = element_rect(fill = "#ffffff")
           ,plot.title = element_text(hjust = 0.5)
+          ,legend.title = element_text(size = 7)
+          ,legend.text = element_text(size = 7)
+          ,legend.key.size = unit(0.6, "cm")
     ) +
     scale_x_continuous(labels = xax$hour #Vector of labels
                        ,breaks = xax$rn2
     ) +
     scale_fill_gradient2(low = "snow1", high = "navyblue") +
-    labs(fill = 'Time played',x = "Hour",y = "Hours played") +
+    labs(fill = 'Minutes played',x = "Hour",y = "Hours played") +
     ggtitle("Density of streaming time per day")
 }

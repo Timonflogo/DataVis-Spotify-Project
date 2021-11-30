@@ -65,11 +65,14 @@ ggplot(data, aes(x = index,y = 1, fill = mPlayed)) +
         ,axis.text.y = element_blank()
         ,legend.background = element_rect(fill = "#ffffff")
         ,plot.title = element_text(hjust = 0.5)
+        ,legend.title = element_text(size = 7)
+        ,legend.text = element_text(size = 7)
+        ,legend.key.size = unit(0.6, "cm")
   ) +
   scale_x_continuous(labels = xaxis$day_of_week #Vector of labels
                      ,breaks = xaxis$rn2
   ) +
   scale_fill_gradient2(low = "snow1", high = "navyblue") +
-  labs(fill = 'Time played',x = "Day of the week",y = "Minutes played")  +
+  labs(fill = 'Minutes played',x = "Day of the week",y = "Minutes played")  +
   ggtitle("Density of streaming time per week")
 }
