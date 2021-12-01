@@ -125,27 +125,21 @@ ui <-
                 ,width = 7
                ),
                column(
-                 plotlyOutput(outputId = "Radarchart",width = '100%')
+                 plotlyOutput(outputId = "bar",width = '100%')
                  ,width = 5
                )
              ),
              
+             
              fluidRow(
                column(uiOutput("back2"),width = 2)
                ,column(p("You have selected the following weekdays: "),width = 2)
-               ,column(textOutput("s_weekday",inline = T),width = 4),
+               ,column(textOutput("s_weekday",inline = T),width = 3)
+               ,column(numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50), width = 2)
+               ,column(numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50), width = 2)
+               ,column(uiOutput("back"), width = 1)
              ),
              
-             fluidRow(
-             column(3
-                    , numericInput(inputId = "NumArtists",label = "Number of artists:",value =  10, min = 1, max = 50)),
-             column(3
-                    , numericInput(inputId = "NumTracks",label = "Number of tracks:",value =  10, min = 1, max = 50))
-             ),
-             
-             plotlyOutput("bar"),
-             
-             uiOutput("back"),
              
              fluidRow(
                column(3
@@ -280,12 +274,6 @@ server <- function(input,output){
                   , time_played_end = input$time_played_end
                   , selected_weekday = selected_weekday()
                   )
-  })
-  
-  ### Radar chart ----
-  
-  output$Radarchart <- renderPlotly({
-    radarplot(dataInput1 = masterData(),selected_weekday = selected_weekday())
   })
   
   ### Drill down on line chart ----
