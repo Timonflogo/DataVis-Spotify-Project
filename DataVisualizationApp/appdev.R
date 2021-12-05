@@ -70,7 +70,8 @@ ui <-
                              background-color: #ffffff;
               }'),
              
-             uiOutput("removeOther"),
+             div(style = "position:absolute;right:1em;margin-top: 320px;", 
+                 uiOutput("removeOther")),
              
              plotOutput(outputId = "Streamgraph", 
                         brush = brushOpts(id = "plot1_brush", 
@@ -122,11 +123,11 @@ ui <-
              fluidRow(
                column(
                 plotlyOutput(outputId = "Linechart",width = '100%')
-                ,width = 7
+                ,width = 6
                ),
                column(
                  plotlyOutput(outputId = "bar",width = '100%')
-                 ,width = 5
+                 ,width = 6
                )
              ),
              
