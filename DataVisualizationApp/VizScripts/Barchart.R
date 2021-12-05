@@ -53,7 +53,6 @@ barchart <- function(dataInput1,current_artist = current_artist()){
     layout(title = if(length(current_artist) != 1){'Top artists'} else {paste("Top tracks for",current_artist)}) %>%  #go for current Artist unless else is selected
     layout(plot_bgcolor='#ffffff') %>% 
     layout(paper_bgcolor='#ffffff') %>% 
-    layout(xaxis = list(title = if(length(current_artist) != 1){'Artist'} else {'Track'}))
-  
-  
+    layout(xaxis = list(title = if(length(current_artist) != 1){'Artist'} else {'Track'})) %>% 
+    layout(yaxis = list(title = "Hours played"))
 }

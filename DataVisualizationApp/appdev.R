@@ -188,6 +188,8 @@ ui <-
              
              plotlyOutput(outputId = "Scatterplot",height = "900"),
              
+             fluidRow(),
+             
              # textOutput(outputId = "c_artist"),
              # 
              # dataTableOutput(outputId = "BrushedData"),
