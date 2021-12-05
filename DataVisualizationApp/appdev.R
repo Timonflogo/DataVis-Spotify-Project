@@ -122,11 +122,11 @@ ui <-
              fluidRow(
                column(
                 plotlyOutput(outputId = "Linechart",width = '100%')
-                ,width = 7
+                ,width = 6
                ),
                column(
                  plotlyOutput(outputId = "bar",width = '100%')
-                 ,width = 5
+                 ,width = 6
                )
              ),
              
@@ -186,6 +186,8 @@ ui <-
              ),
              
              plotlyOutput(outputId = "Scatterplot",height = "900"),
+             
+             fluidRow(),
              
              # textOutput(outputId = "c_artist"),
              # 
