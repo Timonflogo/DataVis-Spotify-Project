@@ -37,12 +37,12 @@ oneDHeatmap <- function(heatmap_data = heatmap_data()){
   options(scipen = 999)
 
   #Create a grid of all hour:minute value during a day
-  totaltime <- expand.grid(c(0:23),c(0:59))
+  totaltime <- expand.grid(c(0:23),seq(0,55,5)) #5 minute intervals
   totaltime$Var1 <- ifelse(nchar(totaltime$Var1) == 1,paste0('0',totaltime$Var1),no = totaltime$Var1)
   totaltime$Var2 <- ifelse(nchar(totaltime$Var2) == 1,paste0('0',totaltime$Var2),no = totaltime$Var2)
   totaltime <- plyr::mdply(totaltime, 'paste', sep = ':')
   totaltime <- totaltime[order(totaltime$Var1,totaltime$Var2),]
-  totaltime$index <- seq(from = 0,to = 1439,by = 1)
+  totaltime$index <- seq(from = 0,to = nrow(totaltime)-1,by = 1)
   totaltime <- totaltime %>% 
     dplyr::rename(time = V1) %>% 
     select(index,time)
