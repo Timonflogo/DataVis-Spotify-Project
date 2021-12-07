@@ -81,9 +81,9 @@ ui <-
              
              textOutput(outputId = "FilterText"),
              
-             plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100),
-             
              plotOutput(outputId = "sevenDHeatmap", width = '100%', height = 100),
+             
+             plotOutput(outputId = "oneDHeatmap",width = '100%',height = 100),
              
              # fluidRow(
              #   column(
